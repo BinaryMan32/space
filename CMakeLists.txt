@@ -12,7 +12,7 @@ find_package(SDL2 REQUIRED)
 find_package(OpenGL REQUIRED)
 
 # Include directories
-include_directories(${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
+include_directories(${CMAKE_SOURCE_DIR} ${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
 
 # Source files
 set(SOURCES
