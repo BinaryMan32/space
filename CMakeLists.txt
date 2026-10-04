@@ -16,8 +16,8 @@ find_package(OpenGL REQUIRED)
 set(SOURCES
     actionbase.cpp
     actionbase.h
-    DirectInput.cpp
-    DirectInput.h
+    Input.cpp
+    Input.h
     DirectSound.cpp
     DirectSound.h
     glstream.cpp

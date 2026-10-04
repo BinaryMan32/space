@@ -1,7 +1,7 @@
 #include "objects.h"
 
 #include "StarField.h"
-#include "DirectInput.h"
+#include "Input.h"
 
 //	Camera	///////////////////////////////////////////////////////////////////////////////////
 
@@ -174,13 +174,13 @@ void PlayerShip::OnTick()
 	static float OldMouseAngularAcceleration = 0.0f;
 	
 	float MouseAngularAcceleration =
-		( FrameTime > 0.0f ) ? ( -1.5f * DInput.dx ) : ( 0.0f );
+		( FrameTime > 0.0f ) ? ( -1.5f * Input.dx ) : ( 0.0f );
 	
-	AngularAcceleration += ( -DInput.dx + OldMouseAngularAcceleration ) / 2.0f;
+	AngularAcceleration += ( -Input.dx + OldMouseAngularAcceleration ) / 2.0f;
 	
 	OldMouseAngularAcceleration = MouseAngularAcceleration;
 
-	if ( DInput.KeyDown( DIK_UPARROW ) )
+	if ( Input.KeyDown( SDL_SCANCODE_UP ) )
 	{
 		Accelerate(  750 * vector2d( Angle ), 0 );
 
@@ -195,11 +195,11 @@ void PlayerShip::OnTick()
 		ParticleSystem.End();
 	}
 
-	if ( DInput.KeyDown( DIK_DOWNARROW  ) ) Accelerate( -300 * vector2d( Angle ), 0 );
-	if ( DInput.KeyDown( DIK_LEFTARROW  ) ) Accelerate(  300 * Perpendicular( vector2d( Angle ) ), 0 );
-	if ( DInput.KeyDown( DIK_RIGHTARROW ) ) Accelerate( -300 * Perpendicular( vector2d( Angle ) ), 0 );
+	if ( Input.KeyDown( SDL_SCANCODE_DOWN  ) ) Accelerate( -300 * vector2d( Angle ), 0 );
+	if ( Input.KeyDown( SDL_SCANCODE_LEFT  ) ) Accelerate(  300 * Perpendicular( vector2d( Angle ) ), 0 );
+	if ( Input.KeyDown( SDL_SCANCODE_RIGHT ) ) Accelerate( -300 * Perpendicular( vector2d( Angle ) ), 0 );
 
-	if ( DInput.KeyDown( DIK_LEFTMOUSE ) && GunEnergy > 0.25f && FireDelay <= 0.0f )
+	if ( Input.KeyDown( KEY_LEFTMOUSE ) && GunEnergy > 0.25f && FireDelay <= 0.0f )
 	{
 		if ( SetState( Attack ) )
 		{
@@ -214,7 +214,7 @@ void PlayerShip::OnTick()
 		}
 	}
 
-	if ( DInput.KeyDown( DIK_RIGHTMOUSE ) && GunEnergy > 0.5f && FireDelay <= 0.0f )
+	if ( Input.KeyDown( KEY_RIGHTMOUSE ) && GunEnergy > 0.5f && FireDelay <= 0.0f )
 	{
 		if ( SetState( Attack ) )
 		{

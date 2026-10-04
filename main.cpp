@@ -3,7 +3,7 @@
 
 #include <string.h>
 
-#include "DirectInput.h"
+#include "Input.h"
 #include "objects.h"
 
 static bool Running = true;
@@ -13,7 +13,7 @@ void HandleEvent( const SDL_Event & event )
 	switch ( event.type )
 	{
 		case SDL_EVENT_WINDOW_FOCUS_GAINED:
-			DInput.Restore();
+			Input.Restore();
 			break;
 
 		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
@@ -33,14 +33,14 @@ void RenderFrame()
 {
 	glClear( GL_COLOR_BUFFER_BIT );
 
-	DInput.Poll();
+	Input.Poll();
 	GameWorld.Tick();
 
 	Program.SwapBuffers();
 
-	if ( DInput.KeyDown( DIK_LALT ) || DInput.KeyDown( DIK_RALT ) )
+	if ( Input.KeyDown( SDL_SCANCODE_LALT ) || Input.KeyDown( SDL_SCANCODE_RALT ) )
 	{
-		if ( DInput.KeyPress( DIK_Q ) ) Running = false;
+		if ( Input.KeyPress( SDL_SCANCODE_Q ) ) Running = false;
 	}
 }
 
@@ -62,7 +62,7 @@ int main( int argc, char *argv[] )
 	if ( ! DSound.Init() )
 		return 1;
 
-	if ( ! DInput.Init( Program.GetWindow() ) )
+	if ( ! Input.Init( Program.GetWindow() ) )
 		return 1;
 	
 	if ( ! ParticleSystem.Init() )
