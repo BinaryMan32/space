@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.16)
 
 # Project name and version
 project(SpaceGame VERSION 1.0 LANGUAGES CXX)
@@ -7,12 +7,10 @@ project(SpaceGame VERSION 1.0 LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# Find SDL2 and OpenGL
-find_package(SDL2 REQUIRED)
+# Find SDL3, SDL3_ttf and OpenGL
+find_package(SDL3 REQUIRED CONFIG)
+find_package(SDL3_ttf REQUIRED CONFIG)
 find_package(OpenGL REQUIRED)
-
-# Include directories
-include_directories(${CMAKE_SOURCE_DIR} ${SDL2_INCLUDE_DIRS} ${OPENGL_INCLUDE_DIR})
 
 # Source files
 set(SOURCES
@@ -28,14 +26,12 @@ set(SOURCES
     glstuff.h
     image.cpp
     image.h
-    list.cpp
     List.h
     main.cpp
     objects.cpp
     objects.h
     particles.cpp
     particles.h
-    queue.cpp
     queue.h
     spritebase.cpp
     spritebase.h
@@ -55,13 +51,30 @@ set(SOURCES
     World.h
 )
 
+# list.cpp and queue.cpp hold template definitions included by their headers
+set(TEMPLATE_SOURCES
+    list.cpp
+    queue.cpp
+)
+set_source_files_properties(${TEMPLATE_SOURCES} PROPERTIES HEADER_FILE_ONLY TRUE)
+
 # Add executable
-add_executable(${PROJECT_NAME} ${SOURCES})
+add_executable(${PROJECT_NAME} ${SOURCES} ${TEMPLATE_SOURCES})
 
 # Link libraries
-target_link_libraries(${PROJECT_NAME} ${SDL2_LIBRARIES} ${OPENGL_gl_LIBRARY})
+target_link_libraries(${PROJECT_NAME} PRIVATE SDL3::SDL3 SDL3_ttf::SDL3_ttf OpenGL::GL OpenGL::GLU)
 
 # Set output directory
 set_target_properties(${PROJECT_NAME} PROPERTIES
     RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+)
+
+# Images, sounds and fonts are loaded by relative path, so copy them next to the executable
+file(GLOB ASSETS CONFIGURE_DEPENDS
+    ${CMAKE_SOURCE_DIR}/*.tga
+    ${CMAKE_SOURCE_DIR}/*.wav
+    ${CMAKE_SOURCE_DIR}/*.ttf
+)
+add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different ${ASSETS} $<TARGET_FILE_DIR:${PROJECT_NAME}>
 )
