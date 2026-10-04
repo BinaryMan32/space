@@ -46,10 +46,13 @@ bool InputClass::SetDisplaySize( int theWidth, int theHeight )
 
 bool InputClass::Init( SDL_Window *theWindow )
 {
+	if ( theWindow == NULL ) return false;
+
 	Window = theWindow;
 
 	// hide the cursor and report relative mouse motion, like an exclusive DirectInput mouse
-	if ( ! Restore() ) return false;
+	// - motion is still reported if this fails, but the cursor can leave the window
+	Restore();
 
 	// discard any motion that happened before the game started
 	SDL_GetRelativeMouseState( NULL, NULL );
