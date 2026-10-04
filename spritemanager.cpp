@@ -215,10 +215,10 @@ void SpriteManager::RemoveSprite( Sprite & theSprite )
 	Action theAction;
 
 	// remove source edges
-	while ( theAction = theSprite.FirstSourceAction() ) RemoveAction( theAction );
+	while ( ( theAction = theSprite.FirstSourceAction() ) ) RemoveAction( theAction );
 
 	// remove target edges
-	while ( theAction = theSprite.FirstTargetAction() ) RemoveAction( theAction );
+	while ( ( theAction = theSprite.FirstTargetAction() ) ) RemoveAction( theAction );
 	
 	// advance to next node
 	theSprite.nodePtr = theSpriteNode->next;

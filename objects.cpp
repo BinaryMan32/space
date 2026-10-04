@@ -35,7 +35,7 @@ void Camera::OnTick()
 
 float Asteroid::MassArray[4] = { 50, 100, 200, 400 };
 float Asteroid::RadiusArray[4] = { 8, 16, 24, 32 };
-char *Asteroid::ImageArray[4] = { "SmallAsteroid.tga", "MediumAsteroid.tga", "LargeAsteroid.tga", "HugeAsteroid.tga" };
+const char *Asteroid::ImageArray[4] = { "SmallAsteroid.tga", "MediumAsteroid.tga", "LargeAsteroid.tga", "HugeAsteroid.tga" };
 
 Asteroid::Asteroid( int theSize ) : SpriteNode( ImageArray[ theSize ] )
 {

@@ -14,7 +14,7 @@ extern void SpriteCollision( SpriteBase *A, SpriteBase *B );
 
 extern bool StateInterruptionAllowed[ NUM_SPRITE_STATES ][ NUM_SPRITE_STATES ];
 
-typedef enum SpriteStateIndex { New = 0, Birth, Normal, Move, Attack, Injury, Death, Dead };
+enum SpriteStateIndex { New = 0, Birth, Normal, Move, Attack, Injury, Death, Dead };
 
 class SpriteState
 {
@@ -47,7 +47,7 @@ class SpriteState
 		}
 	}
 
-	void Init( int theStartFrame, int theNumFrames, SpriteStateIndex theNextState, char *theSoundName )
+	void Init( int theStartFrame, int theNumFrames, SpriteStateIndex theNextState, const char *theSoundName )
 	{
 		if ( ( theStartFrame >= 0 ) && ( theNumFrames >= 0 ) )
 		{

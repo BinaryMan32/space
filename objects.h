@@ -21,7 +21,7 @@ class Asteroid : public SpriteNode
 {
 	static float MassArray[4];
 	static float RadiusArray[4];
-	static char *ImageArray[4];
+	static const char *ImageArray[4];
 
 	int size;
 

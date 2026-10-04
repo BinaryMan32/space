@@ -5,7 +5,9 @@
 #include "spritebase.h"
 
 // disable warning for unused __inline functions
+#ifdef _MSC_VER
 #pragma warning( disable : 4514 )
+#endif
 
 #ifndef NULL
 	#define NULL 0
