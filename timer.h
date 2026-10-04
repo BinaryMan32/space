@@ -1,6 +1,8 @@
 #ifndef TIMER_H
 #define TIMER_H
 
+#include <cstdint>
+
 // framerate counter
 
 extern float FrameTime;
@@ -15,9 +17,9 @@ class timer
 	static bool Initialized;
 	static double CyclesPerSecond;
 
-	__int64 StartCycle;
-	__int64 StopCycle;
-	__int64 NumCycles;
+	int64_t StartCycle;
+	int64_t StopCycle;
+	int64_t NumCycles;
 	double  NumSeconds;
 
 	void Initialize();
@@ -34,11 +36,11 @@ class timer
 	// - can be called multiple times without another StartTime()
 	void Stop();
 
-	// Returns the processor frequency
+	// Returns the clock frequency
 	double GetFrequency();
 	
-	// Returns the time elapsed between StartTimer() and StopTimer() in cycles
-	__int64 GetCycles();
+	// Returns the time elapsed between StartTimer() and StopTimer() in clock ticks
+	int64_t GetCycles();
 	
 	// Returns the time elapsed between StartTimer() and StopTimer() in seconds
 	double GetSeconds();
