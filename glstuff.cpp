@@ -42,41 +42,19 @@ void glClass::Resize( int theWidth, int theHeight )
 	glViewport( 0, 0, width, height );
 }
 
-void glClass::Init( int theWidth, int theHeight )
+bool glClass::Init()
 {
-	PIXELFORMATDESCRIPTOR pfd =
-	{ 
-	    sizeof( PIXELFORMATDESCRIPTOR ),
-	    1,                        // version number 
-	    PFD_DRAW_TO_WINDOW |      // support window 
-	    PFD_SUPPORT_OPENGL |      // support OpenGL 
-	    PFD_GENERIC_ACCELERATED | // hardware acceleration
-		PFD_DOUBLEBUFFER,         // double buffered 
-	    PFD_TYPE_RGBA,            // RGBA type 
-	    24,                       // 24-bit color depth 
-		0, 0, 0, 0, 0, 0,         // color bits ignored 
-	    8,                        // 8-bit alpha buffer 
-	    0,                        // shift bit ignored 
-	    0,                        // no accumulation buffer 
-	    0, 0, 0, 0,               // accum bits ignored 
-	    32,	                      // 32-bit z-buffer     
-	    0,                        // no stencil buffer 
-	    0,                        // no auxiliary buffer 
-	    PFD_MAIN_PLANE,           // main layer
-	    0,                        // reserved 
-	    0, 0, 0                   // layer masks ignored 
-	}; 
- 
-	int FormatIndex = ChoosePixelFormat( Program.GetHDC(), &pfd );
+	Context = SDL_GL_CreateContext( Program.GetWindow() );
 
-	DescribePixelFormat( Program.GetHDC(), FormatIndex, sizeof(PIXELFORMATDESCRIPTOR), &pfd );
+	if ( Context == NULL )
+	{
+		SDL_Log( "SDL_GL_CreateContext() failed: %s", SDL_GetError() );
+		return false;
+	}
 
-	SetPixelFormat( Program.GetHDC(), FormatIndex, &pfd );
-		
-	HGLRC hglrc = wglCreateContext( Program.GetHDC() );
-	
-	wglMakeCurrent( Program.GetHDC(), hglrc );
-	
+	// synchronize buffer swaps with the display refresh when supported
+	SDL_GL_SetSwapInterval( 1 );
+
 	glDrawBuffer( GL_BACK );
 	
 	glClearColor( 0, 0, 0, 1 );
@@ -85,64 +63,22 @@ void glClass::Init( int theWidth, int theHeight )
 	// texture mapping settings
 	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
 
-	// set projection
-	Resize( theWidth, theHeight );
-}
-
-void glClass::Init()
-{
-	PIXELFORMATDESCRIPTOR pfd =
-	{ 
-	    sizeof( PIXELFORMATDESCRIPTOR ),
-	    1,                        // version number 
-	    PFD_DRAW_TO_WINDOW |      // support window 
-	    PFD_SUPPORT_OPENGL |      // support OpenGL 
-	    PFD_GENERIC_ACCELERATED | // hardware acceleration
-		PFD_DOUBLEBUFFER,         // double buffered 
-	    PFD_TYPE_RGBA,            // RGBA type 
-	    24,                       // 24-bit color depth 
-		0, 0, 0, 0, 0, 0,         // color bits ignored 
-	    8,                        // 8-bit alpha buffer 
-	    0,                        // shift bit ignored 
-	    0,                        // no accumulation buffer 
-	    0, 0, 0, 0,               // accum bits ignored 
-	    32,	                      // 32-bit z-buffer     
-	    0,                        // no stencil buffer 
-	    0,                        // no auxiliary buffer 
-	    PFD_MAIN_PLANE,           // main layer
-	    0,                        // reserved 
-	    0, 0, 0                   // layer masks ignored 
-	}; 
- 
-	int FormatIndex = ChoosePixelFormat( Program.GetHDC(), &pfd );
-
-	DescribePixelFormat( Program.GetHDC(), FormatIndex, sizeof(PIXELFORMATDESCRIPTOR), &pfd );
-
-	SetPixelFormat( Program.GetHDC(), FormatIndex, &pfd );
-		
-	HGLRC hglrc = wglCreateContext( Program.GetHDC() );
-	
-	wglMakeCurrent( Program.GetHDC(), hglrc );
-	
-	glDrawBuffer( GL_BACK );
-	
-	glClearColor( 0, 0, 0, 1 );
-	glClear( GL_COLOR_BUFFER_BIT );
-
-	// texture mapping settings
-	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE );
-
-	RECT WindowRect;
-	GetClientRect( Program.GetHWND(), &WindowRect );
+	int WindowWidth, WindowHeight;
+	SDL_GetWindowSizeInPixels( Program.GetWindow(), &WindowWidth, &WindowHeight );
 	
 	// set projection
-	Resize( WindowRect.right, WindowRect.bottom );
+	Resize( WindowWidth, WindowHeight );
+
+	return true;
 }
 
 void glClass::Destroy()
 {
-	wglMakeCurrent( NULL, NULL );
-	wglDeleteContext( wglGetCurrentContext() );
+	if ( Context != NULL )
+	{
+		SDL_GL_DestroyContext( Context );
+		Context = NULL;
+	}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +133,7 @@ glClass::Texture *glClass::TextureLoad( string & fileName )
 						glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
 
 						glTexImage2D( GL_TEXTURE_2D, 0, 4, theTexture->width, theTexture->height,
-							0, GL_BGRA_EXT, GL_UNSIGNED_BYTE, data + FrameOffset * index  );
+							0, GL_BGRA, GL_UNSIGNED_BYTE, data + FrameOffset * index  );
 					}
 
 					TextureList.Insert( theTexture );

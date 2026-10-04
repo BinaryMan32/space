@@ -1,14 +1,10 @@
 #ifndef GLSTUFF_H
 #define GLSTUFF_H
 
-#include <windows.h>
-#include <windowsx.h>
+#include <SDL3/SDL_opengl.h>
+#include <GL/glu.h>
 
-#include <wingdi.h>
-#include <gl/gl.h>
-#include <gl/glu.h>
-
-#include "WinApp.h"
+#include "App.h"
 #include "gamestring.h"
 #include "image.h"
 #include "List.h"
@@ -44,6 +40,8 @@ class glClass
 	
 	List<Texture *> TextureList;
 
+	SDL_GLContext Context;
+
 	int width;
 	int height;
 
@@ -59,14 +57,14 @@ class glClass
 	glClass()
 	{
 		width = height = 0;
+		Context = NULL;
 	}
 		
 	int GetWidth();
 	int GetHeight();
 	
 	void Resize( int theWidth, int theHeight );
-	void Init( int theWidth, int theHeight );
-	void Init();
+	bool Init();
 	void Destroy();
 };
 

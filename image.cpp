@@ -3,7 +3,7 @@
 
 #include "image.h"
 
-unsigned char *LoadImageA( string & fileName, int & width, int & height )
+unsigned char *LoadImage( string & fileName, int & width, int & height )
 {
 	int dotPosition = fileName.Find( '.' ) + 1;
 	if ( dotPosition == 0 ) return NULL;

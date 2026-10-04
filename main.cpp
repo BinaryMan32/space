@@ -1,33 +1,32 @@
+#include <SDL3/SDL.h>
+#include <SDL3/SDL_main.h>
+
+#include <string.h>
+
 #include "DirectInput.h"
 #include "objects.h"
 
-long CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )
+static bool Running = true;
+
+void HandleEvent( const SDL_Event & event )
 {
-	switch ( message )
+	switch ( event.type )
 	{
-		case WM_ACTIVATE:
+		case SDL_EVENT_WINDOW_FOCUS_GAINED:
 			DInput.Restore();
 			break;
-	
-		case WM_PAINT:
+
+		case SDL_EVENT_WINDOW_PIXEL_SIZE_CHANGED:
+			gl.Resize( event.window.data1, event.window.data2 );
 			break;
 
-		case WM_SIZE:
-			if ( wParam != SIZE_MINIMIZED )
-				gl.Resize( lParam & 0x0000FFFF, lParam >> 16 );
-			break;
-
-		case WM_DESTROY:
-			gl.Destroy();
-			Program.RestoreDisplayMode();
-			PostQuitMessage( 0 );
+		case SDL_EVENT_QUIT:
+			Running = false;
 			break;
 
 		default:
 			break;
 	}
-
-	return DefWindowProc( hWnd, message, wParam, lParam );
 }
 
 void RenderFrame()
@@ -37,35 +36,37 @@ void RenderFrame()
 	DInput.Poll();
 	GameWorld.Tick();
 
-	SwapBuffers( Program.GetHDC() );
+	Program.SwapBuffers();
 
 	if ( DInput.KeyDown( DIK_LALT ) || DInput.KeyDown( DIK_RALT ) )
 	{
-		if ( DInput.KeyPress( DIK_Q ) ) PostMessage( Program.GetHWND(), WM_CLOSE, 0, 0 );
+		if ( DInput.KeyPress( DIK_Q ) ) Running = false;
 	}
 }
 
-int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR LpCmdLine, int ShowCmd )
+int main( int argc, char *argv[] )
 {
-	MSG msg;
+	bool FullScreen = false;
 
-	Program.SaveDisplayMode();
-	Program.SetDisplayMode( 1024, 768, 32 );
+	for ( int index = 1; index < argc; index++ )
+	{
+		if ( strcmp( argv[ index ], "--fullscreen" ) == 0 ) FullScreen = true;
+	}
 
-//	if ( ! Program.Init( hInstance, ShowCmd, "Asteroids", 800, 600 ) )
-	if ( ! Program.InitFullScreen( hInstance, ShowCmd, "Asteroids" ) )
-		return false;
+	if ( ! Program.Init( "Asteroids", 1024, 768, FullScreen ) )
+		return 1;
 
-	gl.Init();
+	if ( ! gl.Init() )
+		return 1;
 
-	if ( ! DSound.Init( Program.GetHWND() ) )
-		return false;
+	if ( ! DSound.Init() )
+		return 1;
 
-	if ( ! DInput.Init( Program.GetHINSTANCE(), Program.GetHWND() ) )
-		return false;
+	if ( ! DInput.Init( Program.GetWindow() ) )
+		return 1;
 	
 	if ( ! ParticleSystem.Init() )
-		return false;
+		return 1;
 
 	glMatrixMode( GL_PROJECTION );
 	glLoadIdentity();
@@ -101,19 +102,17 @@ int WINAPI WinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR LpCmdLin
 							    Radians( float( rand()%360 ) ) );
 	}
 	
-	while ( true )
+	while ( Running )
 	{
-		if ( PeekMessage( &msg, NULL, 0, 0, PM_NOREMOVE ) )
-		{
-			if ( ! GetMessage( &msg, NULL, 0, 0 ) ) return msg.wParam;
-			TranslateMessage( &msg );
-			DispatchMessage( &msg );
-		}
-		else
-		{
-			RenderFrame();
-		}
+		SDL_Event event;
+
+		while ( SDL_PollEvent( &event ) ) HandleEvent( event );
+
+		RenderFrame();
 	}
 
-	return 1;
+	gl.Destroy();
+	Program.Destroy();
+
+	return 0;
 }

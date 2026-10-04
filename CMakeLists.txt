@@ -45,8 +45,8 @@ set(SOURCES
     timer.h
     vector.cpp
     vector.h
-    WinApp.cpp
-    WinApp.h
+    App.cpp
+    App.h
     World.cpp
     World.h
 )
