@@ -16,16 +16,18 @@ find_package(OpenGL REQUIRED)
 set(SOURCES
     actionbase.cpp
     actionbase.h
-    Input.cpp
-    Input.h
-    Sound.cpp
-    Sound.h
+    App.cpp
+    App.h
+    gamestring.cpp
+    gamestring.h
     glstream.cpp
     glstream.h
     glstuff.cpp
     glstuff.h
     image.cpp
     image.h
+    Input.cpp
+    Input.h
     List.h
     main.cpp
     objects.cpp
@@ -33,20 +35,18 @@ set(SOURCES
     particles.cpp
     particles.h
     queue.h
+    Sound.cpp
+    Sound.h
     spritebase.cpp
     spritebase.h
     spritemanager.cpp
     spritemanager.h
     StarField.cpp
     StarField.h
-    gamestring.cpp
-    gamestring.h
     timer.cpp
     timer.h
     vector.cpp
     vector.h
-    App.cpp
-    App.h
     World.cpp
     World.h
 )
