@@ -9,16 +9,28 @@ class glstream
 {
 private:
 	
-	static bool DisplayListsCreated;
-	static int  DisplayListBase;
+	// one texture per printable ASCII character, sized in em units
+	struct Glyph
+	{
+		unsigned int Texture;
+		float Width, Advance;
+	};
+
+	static bool GlyphsCreated;
+	static bool GlyphsFailed;
 	static int  NumStreams;
-	static GLYPHMETRICSFLOAT agmf[256];
+	static Glyph Glyphs[128];
+	static float GlyphTop, GlyphBottom;
 
 	float LineX, LineY, CursorX;
 	float FontSize;
 
-	bool CreateDisplayLists();
-	void DestroyDisplayLists();
+	bool CreateGlyphs();
+	void DestroyGlyphs();
+
+	void BeginText();
+	void MoveToCursor();
+	void EndText();
 
 public:
 	
@@ -37,7 +49,7 @@ public:
 	void PrintChar( char theChar );
 
 	glstream & operator << ( char theChar );
-	glstream & operator << ( char *theString );
+	glstream & operator << ( const char *theString );
 	
 	glstream & operator << ( long theNumber );
 	glstream & operator << ( int theNumber );

@@ -1,9 +1,12 @@
-#include <windows.h>
-#include <wingdi.h>
-#include <gl/gl.h>
-#include <stdlib.h>
+#include <SDL3/SDL_opengl.h>
+#include <SDL3_ttf/SDL_ttf.h>
+#include <stdio.h>
 
 #include "glstream.h"
+
+// Font used for all text, metric compatible with Courier New
+#define FONT_FILE		"LiberationMono-Bold.ttf"
+#define FONT_PIXELS		48
 
 // Global Variables
 
@@ -11,66 +14,136 @@ glstream glout;
 
 // Static Variables
 
-bool glstream::DisplayListsCreated = false;
-int  glstream::DisplayListBase = 1024;
-int  glstream::NumStreams = 0;
-GLYPHMETRICSFLOAT glstream::agmf[256];
+bool  glstream::GlyphsCreated = false;
+bool  glstream::GlyphsFailed = false;
+int   glstream::NumStreams = 0;
+glstream::Glyph glstream::Glyphs[128];
+float glstream::GlyphTop = 0.0f;
+float glstream::GlyphBottom = 0.0f;
 
 // Private Functions
 
-bool glstream::CreateDisplayLists()
+bool glstream::CreateGlyphs()
 {
-	if ( DisplayListsCreated ) return true;
+	if ( GlyphsCreated ) return true;
 
-	HDC DeviceContext = wglGetCurrentDC();
+	// if OpenGL is not initialized, or the font could not be loaded, do not create glyphs
+	if ( GlyphsFailed || SDL_GL_GetCurrentContext() == NULL ) return false;
+
+	GlyphsFailed = true;
+
+	if ( ! TTF_Init() )
+	{
+		SDL_Log( "TTF_Init() failed: %s", SDL_GetError() );
+		return false;
+	}
+
+	TTF_Font *Font = TTF_OpenFont( FONT_FILE, FONT_PIXELS );
+
+	if ( Font == NULL )
+	{
+		SDL_Log( "TTF_OpenFont() failed: %s", SDL_GetError() );
+		TTF_Quit();
+		return false;
+	}
+
+	// glyph images span from the font ascent at the top to the descent at the bottom
+	GlyphTop = float( TTF_GetFontAscent( Font ) ) / FONT_PIXELS;
+
+	SDL_Color White = { 255, 255, 255, 255 };
+
+	glPixelStorei( GL_UNPACK_ALIGNMENT, 4 );
+
+	for ( int index = 0; index < 128; index++ )
+	{
+		Glyph & theGlyph = Glyphs[ index ];
+
+		theGlyph.Texture = 0;
+		theGlyph.Width = theGlyph.Advance = 0.0f;
+
+		int Advance;
+		if ( ! TTF_GetGlyphMetrics( Font, index, NULL, NULL, NULL, NULL, &Advance ) ) continue;
+		
+		theGlyph.Advance = float( Advance ) / FONT_PIXELS;
+
+		if ( index <= ' ' || index == 127 ) continue;
+
+		SDL_Surface *Rendered = TTF_RenderGlyph_Blended( Font, index, White );
+		if ( Rendered == NULL ) continue;
+
+		SDL_Surface *Image = SDL_ConvertSurface( Rendered, SDL_PIXELFORMAT_RGBA32 );
+		SDL_DestroySurface( Rendered );
+		if ( Image == NULL ) continue;
+
+		theGlyph.Width = float( Image->w ) / FONT_PIXELS;
+		GlyphBottom = GlyphTop - float( Image->h ) / FONT_PIXELS;
+
+		glGenTextures( 1, &theGlyph.Texture );
+		glBindTexture( GL_TEXTURE_2D, theGlyph.Texture );
+
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+		glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+
+		glPixelStorei( GL_UNPACK_ROW_LENGTH, Image->pitch / 4 );
+		glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA, Image->w, Image->h,
+			0, GL_RGBA, GL_UNSIGNED_BYTE, Image->pixels );
+
+		SDL_DestroySurface( Image );
+	}
+
+	glPixelStorei( GL_UNPACK_ROW_LENGTH, 0 );
+
+	TTF_CloseFont( Font );
+	TTF_Quit();
+
+	GlyphsFailed = false;
 	
-	// if OpenGL is not initialized, do not create lists
-	if ( DeviceContext == NULL ) return false;
-	
-	LOGFONT     lf;
-	HFONT       hFont, hOldFont;
-
-	// create a TrueType font
-	ZeroMemory( &lf, sizeof( LOGFONT ) );
-	lf.lfHeight				= -20;
-	lf.lfWeight				= FW_BOLD;
-	lf.lfCharSet			= ANSI_CHARSET;
-	lf.lfOutPrecision		= OUT_DEFAULT_PRECIS;
-	lf.lfClipPrecision		= CLIP_DEFAULT_PRECIS;
-	lf.lfQuality			= DEFAULT_QUALITY;
-	lf.lfPitchAndFamily		= FF_DONTCARE | DEFAULT_PITCH;
-	lf.lfFaceName[0]		= 'C';
-	lf.lfFaceName[1]		= 'o';
-	lf.lfFaceName[2]		= 'u';
-	lf.lfFaceName[3]		= 'r';
-	lf.lfFaceName[4]		= 'i';
-	lf.lfFaceName[5]		= 'e';
-	lf.lfFaceName[6]		= 'r';
-	lf.lfFaceName[7]		= ' ';
-	lf.lfFaceName[8]		= 'N';
-	lf.lfFaceName[9]		= 'e';
-	lf.lfFaceName[10]		= 'w';
-	lf.lfFaceName[11]		= '\0';
-
-	hFont = CreateFontIndirect( &lf );
-	hOldFont = (HFONT)SelectObject( DeviceContext, hFont );
-
-	wglUseFontOutlines( DeviceContext, 0, 255, DisplayListBase, 0.1f, 0.0f, WGL_FONT_POLYGONS, agmf );
-
-	DeleteObject( SelectObject( DeviceContext, hOldFont ) );
-   
-	return ( DisplayListsCreated = true );
+	return ( GlyphsCreated = true );
 }
 
-void glstream::DestroyDisplayLists()
+void glstream::DestroyGlyphs()
 {
-	if ( DisplayListsCreated )
+	if ( GlyphsCreated )
 	{
-		// if OpenGL is not initialized, do not destroy lists
-		if ( wglGetCurrentDC() != NULL ) glDeleteLists( DisplayListBase, 255 );
+		// if OpenGL is not initialized, do not destroy textures
+		if ( SDL_GL_GetCurrentContext() != NULL )
+		{
+			for ( int index = 0; index < 128; index++ )
+			{
+				if ( Glyphs[ index ].Texture != 0 ) glDeleteTextures( 1, &Glyphs[ index ].Texture );
+			}
+		}
 
-		DisplayListsCreated = false;
+		GlyphsCreated = false;
 	}
+}
+
+// Sets up the transform and texturing for drawing glyphs at the cursor
+void glstream::BeginText()
+{
+	glPushAttrib( GL_ENABLE_BIT | GL_TEXTURE_BIT );
+	glEnable( GL_TEXTURE_2D );
+	glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+
+	glPushMatrix();
+	MoveToCursor();
+}
+
+// Positions the modelview matrix at the cursor
+void glstream::MoveToCursor()
+{
+	glLoadIdentity();
+	glTranslatef( LineX, LineY, 0.0f );
+	glScalef( FontSize, FontSize, FontSize );
+	glTranslatef( CursorX, 0.0f, 0.0f );
+}
+
+void glstream::EndText()
+{
+	glPopMatrix();
+	glPopAttrib();
 }
 
 // Constructor / Destructor
@@ -116,7 +189,7 @@ glstream::~glstream()
 {
 	if ( --NumStreams == 0 )
 	{
-		DestroyDisplayLists();
+		DestroyGlyphs();
 	}
 }
 
@@ -152,36 +225,39 @@ void glstream::NextLine()
 
 void glstream::PrintChar( char theChar )
 {
-	glCallList( DisplayListBase + theChar );
-	CursorX += agmf[ theChar ].gmfCellIncX;
+	if ( theChar < 0 ) return;
+
+	Glyph & theGlyph = Glyphs[ int( theChar ) ];
+
+	if ( theGlyph.Texture != 0 )
+	{
+		glBindTexture( GL_TEXTURE_2D, theGlyph.Texture );
+
+		glBegin( GL_QUADS );
+			glTexCoord2f( 0.0f, 1.0f ); glVertex2f( 0.0f,           GlyphBottom );
+			glTexCoord2f( 1.0f, 1.0f ); glVertex2f( theGlyph.Width, GlyphBottom );
+			glTexCoord2f( 1.0f, 0.0f ); glVertex2f( theGlyph.Width, GlyphTop );
+			glTexCoord2f( 0.0f, 0.0f ); glVertex2f( 0.0f,           GlyphTop );
+		glEnd();
+	}
+
+	// advance to the next character position
+	glTranslatef( theGlyph.Advance, 0.0f, 0.0f );
+	CursorX += theGlyph.Advance;
 }
 
 glstream & glstream::operator << ( char theChar )
 {
-	if ( CreateDisplayLists() )
-	{
-		if ( theChar == '\n' )
-		{
-			NextLine();
-		}
-		else
-		{
-			PrintChar( theChar );
-		}
-	}
+	char theString[ 2 ] = { theChar, '\0' };
 
-	return *this;
+	return (*this) << theString;
 }
 
-glstream & glstream::operator << ( char *theString )
+glstream & glstream::operator << ( const char *theString )
 {
-	if ( CreateDisplayLists() )
+	if ( CreateGlyphs() )
 	{
-		glPushMatrix();
-		glLoadIdentity();
-		glTranslatef( LineX, LineY, 0.0f );
-		glScalef( FontSize, FontSize, FontSize );
-		glTranslatef( CursorX, 0.0f, 0.0f );
+		BeginText();
 
 		int StringLength = 0;
 		while ( theString[ StringLength ] ) StringLength++;
@@ -191,10 +267,7 @@ glstream & glstream::operator << ( char *theString )
 			if ( theString[index] == '\n' )
 			{
 				NextLine();
-				glLoadIdentity();
-				glTranslatef( LineX, LineY, 0.0f );
-				glScalef( FontSize, FontSize, FontSize );
-				glTranslatef( CursorX, 0.0f, 0.0f );
+				MoveToCursor();
 			}
 			else
 			{
@@ -202,7 +275,7 @@ glstream & glstream::operator << ( char *theString )
 			}
 		} 
 	
-		glPopMatrix();
+		EndText();
 	}
 	
 	return *this;
@@ -210,13 +283,9 @@ glstream & glstream::operator << ( char *theString )
 
 glstream & glstream::operator << ( long theNumber )
 {
-	if ( CreateDisplayLists() )
+	if ( CreateGlyphs() )
 	{
-		glPushMatrix();
-		glLoadIdentity();
-		glTranslatef( LineX, LineY, 0.0f );
-		glScalef( FontSize, FontSize, FontSize );
-		glTranslatef( CursorX, 0.0f, 0.0f );
+		BeginText();
 
 		if ( theNumber == 0 )
 		{
@@ -245,7 +314,7 @@ glstream & glstream::operator << ( long theNumber )
 			}
 		}
 
-		glPopMatrix();
+		EndText();
 	}
 
 	return *this;
@@ -258,35 +327,17 @@ glstream & glstream::operator << ( int theNumber )
 
 glstream & glstream::operator << ( double theNumber )
 {
-	if ( CreateDisplayLists() )
+	if ( CreateGlyphs() )
 	{
-		glPushMatrix();
-		glLoadIdentity();
-		glTranslatef( LineX, LineY, 0.0f );
-		glScalef( FontSize, FontSize, FontSize );
-		glTranslatef( CursorX, 0.0f, 0.0f );
+		BeginText();
 
-		int Negative;
-		int DecimalPoint;
-		char *DecimalString = _fcvt( theNumber, 3, &DecimalPoint, &Negative );
+		// print with three decimal places
+		char DecimalString[ 64 ];
+		snprintf( DecimalString, sizeof( DecimalString ), "%.3f", theNumber );
 
-		if ( Negative ) PrintChar( '-' );
-		
-		if ( DecimalPoint <= 0 )
-		{
-			PrintChar( '0' );
-			PrintChar( '.' );
-			while ( DecimalPoint++ < 0 ) PrintChar( '0' );
-		}
-		else
-		{
-			while ( DecimalPoint-- > 0 ) PrintChar( *DecimalString++ );
-			PrintChar( '.' );
-		}
+		for ( char *CharPtr = DecimalString; *CharPtr; CharPtr++ ) PrintChar( *CharPtr );
 
-		while ( *DecimalString ) PrintChar( *DecimalString++ );
-
-		glPopMatrix();
+		EndText();
 	}
 
 	return *this;
