@@ -17,8 +17,10 @@ bool SoundSystem::PlayBuffer( int BufferID )
 	{
 		if ( SDL_GetAudioStreamQueued( Voices[ index ] ) > 0 ) continue;
 
+		// flush so the resampler doesn't hold back the end of the sound waiting for more data
 		if ( ! SDL_SetAudioStreamFormat( Voices[ index ], &Buffer.Spec, NULL ) ||
-			 ! SDL_PutAudioStreamData( Voices[ index ], Buffer.Data, Buffer.Length ) )
+			 ! SDL_PutAudioStreamData( Voices[ index ], Buffer.Data, Buffer.Length ) ||
+			 ! SDL_FlushAudioStream( Voices[ index ] ) )
 		{
 			SDL_Log( "[ Sound.Play() ] - %s", SDL_GetError() );
 			return false;
