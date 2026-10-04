@@ -1,4 +1,6 @@
 #include <iostream.h>
+#include <algorithm>
+#include <cstring>
 
 #include "gamestring.h"
 	
@@ -12,39 +14,7 @@ int string::BytesScanned = 0;
 void string::MemWrite( char *theString, char theValue, int theLength )
 {
 	if ( theString == NULL || theLength == 0 ) return;
-	_asm
-	{
-		mov edi, theString
-		
-		mov ecx, theLength
-		mov edx, theLength
-
-		mov al, theValue
-		mov ah, theValue
-		shl eax, 16
-		mov al, theValue
-		mov ah, theValue
-
-		shr ecx, 2
-		jz NoDWordFill
-			DWordFill:
-				mov [edi], eax
-				add edi, 4
-				dec ecx
-			jnz DWordFill
-		NoDWordFill:
-
-		test edx, 2
-		jz NoWordFill
-			mov [edi], ax
-			add edi, 2
-		NoWordFill:
-
-		test edx, 1
-		jz NoByteFill
-			mov [edi], al
-		NoByteFill:
-	}
+	memset( theString, theValue, theLength );
 
 	BytesCopied += theLength;
 }
@@ -56,39 +26,7 @@ void string::MemWrite( char *theString, char theValue, int theLength )
 void string::MemCopy( char *Source, char *Destination, int theLength )
 {
 	if ( Source == NULL || Destination == NULL || theLength == 0 ) return;
-	_asm
-	{
-		mov esi, Source
-		mov edi, Destination
-			
-		mov ecx, theLength
-		mov edx, theLength
-
-		shr ecx, 2
-		jz NoDWordFill
-			DWordFill:
-				mov eax, [esi]
-				mov [edi], eax
-				add esi, 4
-				add edi, 4
-				dec ecx
-			jnz DWordFill
-		NoDWordFill:
-
-		test edx, 2
-		jz NoWordFill
-			mov ax, [esi]
-			mov [edi], ax
-			add esi, 2
-			add edi, 2
-		NoWordFill:
-
-		test edx, 1
-		jz NoByteFill
-			mov al, [esi]
-			mov [edi], al
-		NoByteFill:
-	}
+	memcpy( Destination, Source, theLength );
 
 	BytesCopied += theLength;
 }
@@ -99,24 +37,9 @@ void string::MemCopy( char *Source, char *Destination, int theLength )
 int string::GetLength( char *theString )
 {
 	if ( theString == NULL ) return 0;
-	int *LengthPtr = &BytesScanned;
-	_asm
-	{
-		mov edi, theString
-		sub eax, eax
-		sub bl,bl
-
-		LengthLoop:
-			cmp [edi],bl
-			je Done
-			inc edi
-			inc eax
-		jmp LengthLoop
-
-		Done:
-
-		add [LengthPtr], eax
-	}
+	int theLength = int( strlen( theString ) );
+	BytesScanned += theLength;
+	return theLength;
 }
 
 
@@ -131,29 +54,12 @@ int string::FindChar( char *theString, int theLength, char theChar )
 
 	BytesScanned += theLength;
 
-	_asm
+	for ( int index = 0; index < theLength; index++ )
 	{
-		mov edi, theString
-		mov ecx, theLength
-		mov bl, theChar
-		sub eax, eax
-
-		FindLoop:
-			cmp [edi], bl
-			je Found
-				
-			cmp eax, ecx
-			jge NotFound
-				
-			inc edi
-			inc eax
-		jmp FindLoop
-
-		NotFound:
-			mov eax, -1
-		
-		Found:
+		if ( theString[ index ] == theChar ) return index;
 	}
+
+	return -1;
 }
 
 // Finds a string in a string
@@ -214,27 +120,11 @@ int string::StringCompare( char *LeftString, int LeftLength, char *RightString, 
 
 	BytesScanned += LeftLength;
 
-	_asm
-	{
-		mov esi,LeftString
-		mov edi,RightString
-		mov ecx,LeftLength
-		sub eax,eax
+	int result = memcmp( LeftString, RightString, LeftLength );
 
-		repe cmpsb
-			
-		je Done
-			
-		jg GreaterThan
-
-			dec eax
-			jmp Done
-			
-		GreaterThan:
-			inc eax
-			
-		Done:
-	}
+	if ( result < 0 ) return -1;
+	if ( result > 0 ) return 1;
+	return 0;
 }
 
 // private parameter constructor
@@ -1148,33 +1038,7 @@ void string::Reverse()
 {
 	if ( length <= 1 ) return;
 		
-	int StringLength = length;
-	char *StringData = data;
-
-	_asm
-	{
-		mov ecx, StringLength
-
-		mov edi, StringData		// edi at start of string
-			
-		mov esi, edi
-		add esi, ecx			// esi at end of string
-
-		shr ecx, 1				// length / 2 exchanges required
-
-		CharLoop:
-			dec esi				// advance end towards middle
-			
-			mov ah, [ edi ]		// exchange byte at [ esi ] with byte at [ edi ]
-			mov al, [ esi ]
-				
-			mov [ edi ], al
-			mov [ esi ], ah
-
-			inc edi				// advance start towards middle
-			dec ecx
-		jnz CharLoop
-	}
+	std::reverse( data, data + length );
 }
 
 

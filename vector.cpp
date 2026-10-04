@@ -1,7 +1,7 @@
 #include "vector.h"
 
 #include <iostream.h>
-//#include <math.h>
+#include <math.h>
 
 //	General Functions For Angles	///////////////////////////////////////////
 
@@ -9,37 +9,17 @@ inline void NormalizeAngle( float & theAngle )
 {
 //	while ( theAngle >= 2 * PI ) theAngle -= 2 * PI;
 //	while ( theAngle <  0      ) theAngle += 2 * PI;
-	_asm
-	{
-		fldpi
-		fadd ST(0), ST(0)	; 2 * PI
-		fld theAngle
-		fprem1
-		fstp theAngle
-		ffree ST(0)			; pop stack
-		fincstp
-	}
+	theAngle = remainderf( theAngle, 2 * PI );
 }
 
-inline float _declspec(naked) arctan( float yval, float xval )
+inline float arctan( float yval, float xval )
 {
-	_asm
-	{
-		fld yval
-		fld xval
-		fpatan
-		ret
-	}
+	return atan2f( yval, xval );
 }
 
-inline float _declspec(naked) fsqrt( float num )
+inline float fsqrt( float num )
 {
-	_asm
-	{
-		fld [esp+4]
-		fsqrt
-		ret
-	}
+	return sqrtf( num );
 }
 
 inline float Degrees( float theAngle )
@@ -67,16 +47,8 @@ vector2d::vector2d()
 // - Initializes Vector to ( cos( theAngle ) , sin( theAngle ) )
 vector2d::vector2d( float theAngle )
 {
-//	x = float( cos( theAngle ) );
-//	y = float( sin( theAngle ) );
-	_asm
-	{
-		mov edi, this
-		fld theAngle
-		fsincos
-		fstp [edi]this.x
-		fstp [edi]this.y
-	}
+	x = cosf( theAngle );
+	y = sinf( theAngle );
 }
 
 // Vector Constructor
