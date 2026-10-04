@@ -1,7 +1,7 @@
 #include <math.h>
 
 #include "glstuff.h"
-#include "list.h"
+#include "List.h"
 #include "timer.h"
 
 #include "particles.h"

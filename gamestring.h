@@ -1,6 +1,6 @@
 ///////////////////////////////////////////////////////////////////////////////
 //
-//  String.h
+//  gamestring.h
 //
 //  Written December 1999 by Fred Fetinger
 //
@@ -38,8 +38,8 @@
 //	string( length, c )				- creates a new string of <length> characters filled with char <c>
 //	SubString( start, length )		- returns the string <length> characters long beginning at position <start>
 
-#ifndef STRING_H
-#define STRING_H
+#ifndef GAMESTRING_H
+#define GAMESTRING_H
 
 #include <fstream.h>
 #include "queue.h"

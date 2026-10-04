@@ -1,5 +1,5 @@
 #include <stdio.h>
-#include "string.h"
+#include "gamestring.h"
 
 #include "image.h"
 

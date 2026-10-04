@@ -2,7 +2,7 @@
 #define PARTICLES_H
 
 #include "glstuff.h"
-#include "list.h"
+#include "List.h"
 #include "vector.h"
 
 extern float frand();

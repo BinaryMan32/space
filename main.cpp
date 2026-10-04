@@ -1,4 +1,4 @@
-#include "directinput.h"
+#include "DirectInput.h"
 #include "objects.h"
 
 long CALLBACK WindowProc( HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam )

@@ -2,7 +2,7 @@
 #define DIRECTSOUND_H
 
 #include <dsound.h>
-#include "string.h"
+#include "gamestring.h"
 
 class Sound;
 class DirectSoundClass;

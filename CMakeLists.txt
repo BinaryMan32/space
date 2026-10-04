@@ -39,8 +39,8 @@ set(SOURCES
     spritemanager.h
     StarField.cpp
     StarField.h
-    string.cpp
-    string.h
+    gamestring.cpp
+    gamestring.h
     timer.cpp
     timer.h
     vector.cpp

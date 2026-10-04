@@ -1,6 +1,6 @@
 #include <iostream.h>
 
-#include "string.h"
+#include "gamestring.h"
 	
 int string::BytesCopied = 0;
 int string::BytesScanned = 0;

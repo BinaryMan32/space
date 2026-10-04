@@ -2,7 +2,7 @@
 #define OBJECTS_H
 
 #include "World.h"
-#include "starfield.h"
+#include "StarField.h"
 
 #define CameraID 1
 class Camera : public SpriteNode

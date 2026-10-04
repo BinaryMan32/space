@@ -1,4 +1,4 @@
-#include "world.h"
+#include "World.h"
 #include "glstream.h"
 
 World GameWorld;

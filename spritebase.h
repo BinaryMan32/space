@@ -1,7 +1,7 @@
 #ifndef SPRITEBASE_H
 #define SPRITEBASE_H
 
-#include "directsound.h"
+#include "DirectSound.h"
 #include "glstuff.h"
 #include "timer.h"
 #include "vector.h"

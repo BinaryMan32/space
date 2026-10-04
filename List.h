@@ -108,6 +108,6 @@ class List
 	void Clear();
 };
 
-#include "List.cpp"
+#include "list.cpp"
 
 #endif

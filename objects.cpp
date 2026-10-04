@@ -1,7 +1,7 @@
 #include "objects.h"
 
-#include "starfield.h"
-#include "directinput.h"
+#include "StarField.h"
+#include "DirectInput.h"
 
 //	Camera	///////////////////////////////////////////////////////////////////////////////////
 
@@ -278,7 +278,7 @@ void PlayerShip::PostDraw()
 
 //	Health	///////////////////////////////////////////////////////////////////////////////////
 
-Health::Health() : SpriteNode( "Health.tga" )
+Health::Health() : SpriteNode( "health.tga" )
 {
 	States[ New    ].Init( 0, 0, Birth );
 	States[ Birth  ].Init( 0, 0, Normal );
@@ -433,7 +433,7 @@ void LargeExplosion::OnTick()
 
 //	Flare	///////////////////////////////////////////////////////////////////////////////////
 
-Flare::Flare() : SpriteNode( "Flare.tga" )
+Flare::Flare() : SpriteNode( "flare.tga" )
 {
 	States[ New ].Init( 0, 0, Normal );
 	States[ Normal ].Init( 0, 1, Normal );

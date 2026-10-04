@@ -9,7 +9,7 @@
 #include <gl/glu.h>
 
 #include "WinApp.h"
-#include "string.h"
+#include "gamestring.h"
 #include "image.h"
 #include "List.h"
 

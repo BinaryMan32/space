@@ -1,7 +1,7 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "string.h"
+#include "gamestring.h"
 
 unsigned char *LoadImage( string & fileName, int & width, int & height );
 unsigned char *LoadImageTGA( string & fileName, int & width, int & height );
