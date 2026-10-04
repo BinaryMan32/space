@@ -24,6 +24,7 @@ unsigned char *LoadImageTGA( string & fileName, int & width, int & height )
 	TGAHeader imageInfo;
 
 	FILE *filePtr = fopen( fileName, "rb" );
+	if ( filePtr == NULL ) return NULL;
 
 	fread( &imageInfo, sizeof( imageInfo ), 1, filePtr );
 	fseek( filePtr, imageInfo.stringLength, SEEK_CUR );
@@ -31,12 +32,16 @@ unsigned char *LoadImageTGA( string & fileName, int & width, int & height )
 	width = imageInfo.width;
 	height = imageInfo.height;
 
-	if ( imageInfo.pixelSize != 32 ) return NULL;
+	if ( imageInfo.pixelSize != 32 )
+	{
+		fclose( filePtr );
+		return NULL;
+	}
 	
 	unsigned char *data = new unsigned char [ width * height * 4 ];
-	if ( data == NULL ) return NULL;
 
 	fread( data, width * 4, height, filePtr );
+	fclose( filePtr );
 
 	return data;
 }

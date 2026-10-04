@@ -6,8 +6,7 @@
 unsigned char *LoadImage( string & fileName, int & width, int & height );
 unsigned char *LoadImageTGA( string & fileName, int & width, int & height );
 
-#define NO_STRUCT_PADDING	1
-#pragma pack( push, NO_STRUCT_PADDING )
+#pragma pack( push, 1 )
 
 struct TGAHeader
 {
@@ -25,7 +24,8 @@ struct TGAHeader
 	unsigned char  attributes;
 };
 
-#pragma pack( pop, NO_STRUCT_PADDING )
-#undef NO_STRUCT_PADDING
+static_assert( sizeof( TGAHeader ) == 18, "TGA header must not be padded" );
+
+#pragma pack( pop )
 
 #endif
