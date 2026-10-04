@@ -1,10 +1,10 @@
 #ifndef IMAGE_H
 #define IMAGE_H
 
-#include "gamestring.h"
+#include <string>
 
-unsigned char *LoadImage( string & fileName, int & width, int & height );
-unsigned char *LoadImageTGA( string & fileName, int & width, int & height );
+unsigned char *LoadImage( const std::string & fileName, int & width, int & height );
+unsigned char *LoadImageTGA( const std::string & fileName, int & width, int & height );
 
 #pragma pack( push, 1 )
 

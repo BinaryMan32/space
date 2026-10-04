@@ -126,7 +126,7 @@ class SpriteNode : public SpriteBase
 	public:
 	
 	SpriteNode();
-	SpriteNode( string FileName );
+	SpriteNode( const std::string & FileName );
 	
 	__inline Sprite GetInterface() const;
 	

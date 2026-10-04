@@ -1,15 +1,15 @@
+#include <ctype.h>
 #include <stdio.h>
-#include "gamestring.h"
 
 #include "image.h"
 
-unsigned char *LoadImage( string & fileName, int & width, int & height )
+unsigned char *LoadImage( const std::string & fileName, int & width, int & height )
 {
-	int dotPosition = fileName.Find( '.' ) + 1;
-	if ( dotPosition == 0 ) return NULL;
+	std::string::size_type dotPosition = fileName.rfind( '.' );
+	if ( dotPosition == std::string::npos ) return NULL;
 		
-	string fileExtension( fileName.SubString( dotPosition, fileName.Length() - dotPosition ) );
-	fileExtension.MakeLowerCase();
+	std::string fileExtension( fileName.substr( dotPosition + 1 ) );
+	for ( char & c : fileExtension ) c = char( tolower( (unsigned char) c ) );
 
 	if ( fileExtension == "tga" )
 	{
@@ -19,11 +19,11 @@ unsigned char *LoadImage( string & fileName, int & width, int & height )
 	return NULL;
 }
 
-unsigned char *LoadImageTGA( string & fileName, int & width, int & height )
+unsigned char *LoadImageTGA( const std::string & fileName, int & width, int & height )
 {
 	TGAHeader imageInfo;
 
-	FILE *filePtr = fopen( fileName, "rb" );
+	FILE *filePtr = fopen( fileName.c_str(), "rb" );
 	if ( filePtr == NULL ) return NULL;
 
 	fread( &imageInfo, sizeof( imageInfo ), 1, filePtr );

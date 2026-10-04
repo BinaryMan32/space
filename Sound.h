@@ -3,7 +3,7 @@
 
 #include <SDL3/SDL.h>
 
-#include "gamestring.h"
+#include <string>
 
 class Sound;
 class SoundSystem;
@@ -16,7 +16,7 @@ class SoundSystem
 
 	struct SoundBuffer
 	{
-		string Name;
+		std::string Name;
 		SDL_AudioSpec Spec;
 		Uint8 *Data;
 		Uint32 Length;

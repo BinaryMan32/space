@@ -18,8 +18,6 @@ set(SOURCES
     actionbase.h
     App.cpp
     App.h
-    gamestring.cpp
-    gamestring.h
     glstream.cpp
     glstream.h
     glstuff.cpp

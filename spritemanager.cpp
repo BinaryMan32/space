@@ -21,7 +21,7 @@ SpriteNode::SpriteNode()
 	firstTargetAction = lastTargetAction = NULL;
 }
 
-SpriteNode::SpriteNode( string FileName )
+SpriteNode::SpriteNode( const std::string & FileName )
 : SpriteBase( FileName )
 {
 	master = NULL;

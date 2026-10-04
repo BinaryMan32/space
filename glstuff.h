@@ -4,8 +4,9 @@
 #include <SDL3/SDL_opengl.h>
 #include <GL/glu.h>
 
+#include <string>
+
 #include "App.h"
-#include "gamestring.h"
 #include "image.h"
 #include "List.h"
 
@@ -31,7 +32,7 @@ class glClass
 	
 	struct Texture
 	{
-		string fileName;
+		std::string fileName;
 		int width, height;
 		int referenceCount;
 		int numFrames;
@@ -47,7 +48,7 @@ class glClass
 
 	friend class glTexture;
 
-	Texture *TextureLoad( string & fileName );
+	Texture *TextureLoad( const std::string & fileName );
 	void TextureAddReference( Texture *theTexture );
 	void TextureRelease( Texture *theTexture );
 	void TextureSelect( Texture *theTexture, int theFrame );
@@ -81,7 +82,7 @@ class glTexture
 		TexturePtr = NULL;
 	}
 
-	glTexture( string fileName )
+	glTexture( const std::string & fileName )
 	{
 		TexturePtr = gl.TextureLoad( fileName );
 	}
@@ -116,7 +117,7 @@ class glTexture
 		 return ( TexturePtr != NULL );
 	}
 
-	void Load( string fileName )
+	void Load( const std::string & fileName )
 	{
 		gl.TextureRelease( TexturePtr );
 		TexturePtr = gl.TextureLoad( fileName );

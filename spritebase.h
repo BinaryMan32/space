@@ -133,7 +133,7 @@ class SpriteBase
 	public:
 
 	SpriteBase();
-	SpriteBase( string FileName );
+	SpriteBase( const std::string & FileName );
 	virtual ~SpriteBase();
 
 	float GetMass() const;

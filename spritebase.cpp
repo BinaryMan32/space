@@ -47,7 +47,7 @@ SpriteBase::SpriteBase() : Image()
 	States[ Dead ].Init( 0, 0, Dead );
 }
 
-SpriteBase::SpriteBase( string FileName ) : Image( FileName )
+SpriteBase::SpriteBase( const std::string & FileName ) : Image( FileName )
 {
 	Angle = 0;
 	Radius = float( ( Image.GetWidth() + Image.GetHeight() ) / 4 );

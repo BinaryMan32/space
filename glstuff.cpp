@@ -85,7 +85,7 @@ void glClass::Destroy()
 //  opengl texture functions  //////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-glClass::Texture *glClass::TextureLoad( string & fileName )
+glClass::Texture *glClass::TextureLoad( const std::string & fileName )
 {
 	List<Texture *>::Iterator TextureIterator = TextureList.Start();
 
