@@ -32,7 +32,6 @@ set(SOURCES
     objects.h
     particles.cpp
     particles.h
-    queue.h
     Sound.cpp
     Sound.h
     spritebase.cpp
@@ -49,10 +48,9 @@ set(SOURCES
     World.h
 )
 
-# list.cpp and queue.cpp hold template definitions included by their headers
+# list.cpp holds template definitions included by List.h
 set(TEMPLATE_SOURCES
     list.cpp
-    queue.cpp
 )
 set_source_files_properties(${TEMPLATE_SOURCES} PROPERTIES HEADER_FILE_ONLY TRUE)
 
