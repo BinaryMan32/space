@@ -24,7 +24,7 @@ void string::MemWrite( char *theString, char theValue, int theLength )
 //	- Source:		pointer to source of memory copy
 //	- Destination:	pointer to destination of memory copy
 //	- theLength:	number of bytes to copy
-void string::MemCopy( char *Source, char *Destination, int theLength )
+void string::MemCopy( const char *Source, char *Destination, int theLength )
 {
 	if ( Source == NULL || Destination == NULL || theLength == 0 ) return;
 	memcpy( Destination, Source, theLength );
@@ -35,7 +35,7 @@ void string::MemCopy( char *Source, char *Destination, int theLength )
 
 // Finds the length of a string
 //	- theString:	pointer to string data
-int string::GetLength( char *theString )
+int string::GetLength( const char *theString )
 {
 	if ( theString == NULL ) return 0;
 	int theLength = int( strlen( theString ) );
@@ -48,7 +48,7 @@ int string::GetLength( char *theString )
 //	- theString:	pointer to string data
 //	- theLength:	length of the string
 //	- theChar:		character to search for
-int string::FindChar( char *theString, int theLength, char theChar )
+int string::FindChar( const char *theString, int theLength, char theChar )
 {
 	if ( theString == NULL ) return -1;
 	if ( theLength <= 0 ) return -1;
@@ -68,7 +68,7 @@ int string::FindChar( char *theString, int theLength, char theChar )
 //	- theLength:	length of the string
 //	- FindChar:		pointer to string data to search for
 //	- FindLength:	length of the string to search for
-int string::FindString( char *theData, int theLength, char *FindData, int FindLength )
+int string::FindString( const char *theData, int theLength, const char *FindData, int FindLength )
 {
 	if ( FindData == NULL ) return -1;
 	if ( FindLength <= 0 ) return -1;
@@ -79,7 +79,7 @@ int string::FindString( char *theData, int theLength, char *FindData, int FindLe
 	int i;
 	int delta;
 		
-	char *tempData = theData;
+	const char *tempData = theData;
 	int tempLength = theLength;
 		
 	while ( ( delta = FindChar( tempData, tempLength, *FindData  ) ) >= 0 )
@@ -111,7 +111,7 @@ int string::FindString( char *theData, int theLength, char *FindData, int FindLe
 //	- returns:		-1 if l <  r
 //					 0 if l == r
 //					 1 if l >  r
-int string::StringCompare( char *LeftString, int LeftLength, char *RightString, int RightLength )
+int string::StringCompare( const char *LeftString, int LeftLength, const char *RightString, int RightLength )
 {
 	if ( LeftString  == NULL || LeftLength  == 0 ) return 1;
 	if ( RightString == NULL || RightLength == 0 ) return -1;
@@ -161,7 +161,7 @@ string::string( char theData )
 // parameter constructor
 //	- creates a new string
 //	- theData:	pointer to character data used to construct the string
-string::string( char *theData )
+string::string( const char *theData )
 {
 	length = GetLength( theData );
 	data = new char [ length + 1 ];
@@ -278,7 +278,7 @@ string & string::operator = ( const string &theString )
 }
 
 // assigns a character pointer to a string
-string & string::operator = ( char *theData )
+string & string::operator = ( const char *theData )
 {
 	length = GetLength( theData );
 	if ( length < 0 ) length = 0;
@@ -371,7 +371,7 @@ string string::operator + ( char c )
 
 // operator +
 //    - appends <rhs> to end of string
-string string::operator + ( char *rhs )
+string string::operator + ( const char *rhs )
 {
 	string temp;
 	int rhsLength = GetLength( rhs );
@@ -421,7 +421,7 @@ string & string::operator += ( char c )
 
 // operator +=
 //    - appends <rhs> to end of string
-string & string::operator += ( char *rhs )
+string & string::operator += ( const char *rhs )
 {
 	char *OldData = data;
 	int OldLength = length;
@@ -484,22 +484,22 @@ bool string::operator >  ( const string & rhs )
 
 // compare string to a char *
 	
-bool string::operator == ( char * rhs )
+bool string::operator == ( const char * rhs )
 	{ return ( StringCompare( data, length, rhs, GetLength(rhs) ) == 0 ); }
 
-bool string::operator != ( char * rhs )
+bool string::operator != ( const char * rhs )
 	{ return ( StringCompare( data, length, rhs, GetLength(rhs) ) != 0 ); }
 
-bool string::operator <= ( char * rhs )
+bool string::operator <= ( const char * rhs )
 	{ return ( StringCompare( data, length, rhs, GetLength(rhs) ) <= 0 ); }
 
-bool string::operator >= ( char * rhs )
+bool string::operator >= ( const char * rhs )
 	{ return ( StringCompare( data, length, rhs, GetLength(rhs) ) >= 0 ); }
 
-bool string::operator <  ( char * rhs )
+bool string::operator <  ( const char * rhs )
 	{ return ( StringCompare( data, length, rhs, GetLength(rhs) ) < 0 ); }
 
-bool string::operator >  ( char * rhs )
+bool string::operator >  ( const char * rhs )
 	{ return ( StringCompare( data, length, rhs, GetLength(rhs) ) > 0 ); }
 
 // Find
@@ -513,7 +513,7 @@ int string::Find( char c )
 // Find
 //    - finds the first occurence of <theString>
 //    - returns position if found, -1 if not in string
-int string::Find( char *theString )
+int string::Find( const char *theString )
 {
 	return FindString( data, length, theString, GetLength( theString ) );
 }
@@ -539,7 +539,7 @@ int string::Find( char c, int index )
 // Find
 //    - finds the first occurence of <theString> after position <index>
 //    - returns position if found, -1 if not in string
-int string::Find( char *theString, int index )
+int string::Find( const char *theString, int index )
 {
 	int delta = FindString( data + index, length - index, theString, GetLength( theString ) );
 	if ( delta < 0 ) return -1;
@@ -581,7 +581,7 @@ int string::Remove( char c )
 //    rhs - pointer to character data to remove
 //    - removes the first occurence of <rhs>
 //    - returns position if removed, -1 if not in string
-int string::Remove( char *rhs )
+int string::Remove( const char *rhs )
 {
 	int index = Find( rhs );
 	if ( index < 0 ) return -1;
@@ -726,7 +726,7 @@ void string::Insert( int index, char c )
 // Insert
 //    index - position to insert at
 //    rhs - string to insert
-void string::Insert( int index, char *rhs )
+void string::Insert( int index, const char *rhs )
 {
 	if ( index < 0 || index >= length ) return;
 
@@ -782,7 +782,7 @@ int string::Replace( char lhs, char rhs )
 //    - lhs : character to find
 //    - rhs : character data to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( char lhs, char *rhs )
+int string::Replace( char lhs, const char *rhs )
 {
 	int index = Find( lhs );
 
@@ -829,7 +829,7 @@ int string::Replace( char lhs, const string & rhs )
 //    - lhs : character data to find
 //    - rhs : character to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( char *lhs, char rhs )
+int string::Replace( const char *lhs, char rhs )
 {
 	int LhsLength = GetLength( lhs );
 	int index = FindString( data, length, lhs, LhsLength );
@@ -853,7 +853,7 @@ int string::Replace( char *lhs, char rhs )
 //    - lhs : character data to find
 //    - rhs : character data to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( char *lhs, char *rhs )
+int string::Replace( const char *lhs, const char *rhs )
 {
 	int LhsLength = GetLength( lhs );
 	int index = FindString( data, length, lhs, LhsLength );
@@ -878,7 +878,7 @@ int string::Replace( char *lhs, char *rhs )
 //    - lhs : character data to find
 //    - rhs : string to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( char *lhs, const string & rhs )
+int string::Replace( const char *lhs, const string & rhs )
 {
 	int LhsLength = GetLength( lhs );
 	int index = FindString( data, length, lhs, LhsLength );
@@ -925,7 +925,7 @@ int string::Replace( const string & lhs, char rhs )
 //    - lhs : string to find
 //    - rhs : character data to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( const string & lhs, char *rhs )
+int string::Replace( const string & lhs, const char *rhs )
 {
 	int index = Find( lhs );
 
@@ -1101,14 +1101,14 @@ string string::SubString( int start, int theLength )
 
 // LoadFile
 //    Loads a complete file from disk into the string
-void string::LoadFile( char *FileName )
+void string::LoadFile( const char *FileName )
 {
 	LoadFile( FileName, 1024, 32 * 1024 );
 }
 
 // LoadFile
 //    Loads a complete file from disk into the string
-void string::LoadFile( char *FileName, int BufferLength, int MaxBuffers )
+void string::LoadFile( const char *FileName, int BufferLength, int MaxBuffers )
 {
 	int index;
 	int NumBuffers = -1;

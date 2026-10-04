@@ -58,24 +58,24 @@ class string
 	//	- Source:		pointer to source of memory copy
 	//	- Destination:	pointer to destination of memory copy
 	//	- theLength:	number of bytes to copy
-	void MemCopy( char *Source, char *Destination, int theLength );
+	void MemCopy( const char *Source, char *Destination, int theLength );
 
 	// Finds the length of a string
 	//	- theString:	pointer to string data
-	int GetLength( char *theString );
+	int GetLength( const char *theString );
 	
 	// Finds a character in a string
 	//	- theString:	pointer to string data
 	//	- theLength:	length of the string
 	//	- theChar:		character to search for
-	int FindChar( char *theString, int theLength, char theChar );
+	int FindChar( const char *theString, int theLength, char theChar );
 
 	// Finds a string in a string
 	//	- theString:	pointer to string data
 	//	- theLength:	length of the string
 	//	- FindChar:		pointer to string data to search for
 	//	- FindLength:	length of the string to search for
-	int FindString( char *theData, int theLength, char *FindData, int FindLength );
+	int FindString( const char *theData, int theLength, const char *FindData, int FindLength );
 	
 	// Compares two strings
 	//	- LeftString:	pointer to data in left string
@@ -85,7 +85,7 @@ class string
 	//	- returns:		-1 if l <  r
 	//					 0 if l == r
 	//					 1 if l >  r
-	int StringCompare( char *LeftString, int LeftLength, char *RightString, int RightLength );
+	int StringCompare( const char *LeftString, int LeftLength, const char *RightString, int RightLength );
 
 	// private parameter constructor
 	//	- use only for temporary storage of old strings
@@ -109,7 +109,7 @@ class string
 	// parameter constructor
 	//	- creates a new string
 	//	- theData:	pointer to character data used to construct the string
-	string( char *theData );
+	string( const char *theData );
 
 	// parameter constructor
 	//	- creates a new string
@@ -133,7 +133,7 @@ class string
 	string & operator = ( const string &theString );
 
 	// assigns a character pointer to a string
-	string & operator = ( char *theData );
+	string & operator = ( const char *theData );
 
 	// assigns a character to a string
 	string & operator = ( char theData );
@@ -166,7 +166,7 @@ class string
 
 	// operator +
 	//    - appends <rhs> to end of string
-	string operator + ( char *rhs );
+	string operator + ( const char *rhs );
 
 	// operator +
 	//    - appends <rhs> to end of string
@@ -178,7 +178,7 @@ class string
 
 	// operator +=
 	//    - appends <rhs> to end of string
-	string & operator += ( char *rhs );
+	string & operator += ( const char *rhs );
 
 	// operator +=
 	//    - appends <rhs> to end of string
@@ -195,12 +195,12 @@ class string
 
 	// compare string to a char *
 	
-	bool operator == ( char * rhs );
-	bool operator != ( char * rhs );
-	bool operator <= ( char * rhs );
-	bool operator >= ( char * rhs );
-	bool operator <  ( char * rhs );
-	bool operator >  ( char * rhs );
+	bool operator == ( const char * rhs );
+	bool operator != ( const char * rhs );
+	bool operator <= ( const char * rhs );
+	bool operator >= ( const char * rhs );
+	bool operator <  ( const char * rhs );
+	bool operator >  ( const char * rhs );
 
 	// Find
 	//    - finds the first occurence of <c>
@@ -210,7 +210,7 @@ class string
 	// Find
 	//    - finds the first occurence of <theString>
 	//    - returns position if found, -1 if not in string
-	int Find( char *theString );
+	int Find( const char *theString );
 
 	// Find
 	//    - finds the first occurence of <theString>
@@ -225,7 +225,7 @@ class string
 	// Find
 	//    - finds the first occurence of <theString> after position <index>
 	//    - returns position if found, -1 if not in string
-	int Find( char *theString, int index );
+	int Find( const char *theString, int index );
 
 	// Find
 	//    - finds the first occurence of <theString> after position <index>
@@ -241,7 +241,7 @@ class string
 	//    rhs - pointer to character data to remove
 	//    - removes the first occurence of <rhs>
 	//    - returns position if removed, -1 if not in string
-	int Remove( char *rhs );
+	int Remove( const char *rhs );
 
 	// Remove
 	//    - removes the first occurence of <rhs>
@@ -266,7 +266,7 @@ class string
 	// Insert
 	//    index - position to insert at
 	//    rhs - string to insert
-	void Insert( int index, char *rhs );
+	void Insert( int index, const char *rhs );
 
 	// Insert
 	//    index - position to insert at
@@ -283,7 +283,7 @@ class string
 	//    - lhs : character to find
 	//    - rhs : character data to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( char lhs, char *rhs );
+	int Replace( char lhs, const char *rhs );
 
 	// Replace
 	//    - lhs : character to find
@@ -295,19 +295,19 @@ class string
 	//    - lhs : character data to find
 	//    - rhs : character to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( char *lhs, char rhs );
+	int Replace( const char *lhs, char rhs );
 
 	// Replace
 	//    - lhs : character data to find
 	//    - rhs : character data to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( char *lhs, char *rhs );
+	int Replace( const char *lhs, const char *rhs );
 
 	// Replace
 	//    - lhs : character data to find
 	//    - rhs : string to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( char *lhs, const string & rhs );
+	int Replace( const char *lhs, const string & rhs );
 
 	// Replace
 	//    - lhs : string to find
@@ -319,7 +319,7 @@ class string
 	//    - lhs : string to find
 	//    - rhs : character data to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( const string & lhs, char *rhs );
+	int Replace( const string & lhs, const char *rhs );
 
 	// Replace
 	//    - lhs : string to find
@@ -353,11 +353,11 @@ class string
 
 	// LoadFile
 	//    Loads a complete file from disk into the string
-	void LoadFile( char *FileName );
+	void LoadFile( const char *FileName );
 
 	// LoadFile
 	//    Loads a complete file from disk into the string
-	void LoadFile( char *FileName, int BufferLength, int MaxBuffers );
+	void LoadFile( const char *FileName, int BufferLength, int MaxBuffers );
 
 	friend std::ostream & operator << ( std::ostream & stream, const string & theString );
 	friend std::istream & operator >> ( std::istream & stream, string & theString );
