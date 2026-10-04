@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "objects.h"
 
 #include "StarField.h"

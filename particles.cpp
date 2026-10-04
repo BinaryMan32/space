@@ -1,4 +1,5 @@
 #include <math.h>
+#include <stdlib.h>
 
 #include "glstuff.h"
 #include "List.h"
@@ -120,10 +121,10 @@ void ParticleSystemClass::ParticleGroup::Draw()
 {
 	float ratio = Counter / Lifetime;
 
-	glColor4ub( StartColor.red   + unsigned char( float( EndColor.red   - StartColor.red   ) * ratio ),
-				StartColor.green + unsigned char( float( EndColor.green - StartColor.green ) * ratio ),
-				StartColor.blue  + unsigned char( float( EndColor.blue  - StartColor.blue  ) * ratio ),
-				StartColor.alpha + unsigned char( float( EndColor.alpha - StartColor.alpha ) * ratio ) );
+	glColor4ub( (unsigned char)( StartColor.red   + float( EndColor.red   - StartColor.red   ) * ratio ),
+				(unsigned char)( StartColor.green + float( EndColor.green - StartColor.green ) * ratio ),
+				(unsigned char)( StartColor.blue  + float( EndColor.blue  - StartColor.blue  ) * ratio ),
+				(unsigned char)( StartColor.alpha + float( EndColor.alpha - StartColor.alpha ) * ratio ) );
 
 	vector2d *PositionPtr = Position + NumParticles;
 
@@ -300,7 +301,8 @@ void ParticleSystemClass::Move()
 		if ( ! ParticleGroupIterator->Move() )
 		{
 			delete *ParticleGroupIterator;
-			ParticleGroupList.Remove( ParticleGroupIterator-- );
+			List<ParticleGroup *>::Iterator RemoveIterator = ParticleGroupIterator--;
+			ParticleGroupList.Remove( RemoveIterator );
 		}
 	}
 }

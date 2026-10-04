@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "StarField.h"
 
 // Layer Class Functions	///////////////////////////////////////////////////
