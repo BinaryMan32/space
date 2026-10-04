@@ -1,82 +1,49 @@
-#ifndef DIRECTSOUND_H
-#define DIRECTSOUND_H
+#ifndef SOUND_H
+#define SOUND_H
 
-#include <dsound.h>
+#include <SDL3/SDL.h>
+
 #include "gamestring.h"
 
 class Sound;
-class DirectSoundClass;
+class SoundSystem;
 
-extern DirectSoundClass DSound; // DirectSound Interface
+extern SoundSystem Audio; // SDL audio device and loaded sounds
 
-#define NO_STRUCT_PADDING	1
-#pragma pack( push, NO_STRUCT_PADDING )
-
-struct RiffHeaderType
-{
-	char ID[4];
-	unsigned int ChunkLength;
-};
-
-struct WaveHeaderType
-{
-	char ID[4];
-
-	struct WaveFormatType
-	{
-		char ID[4];
-		unsigned int   Length;
-		unsigned short wFormatTag;
-		unsigned short nChannels;
-		unsigned int   nSamplesPerSec;
-		unsigned int   nAvgBytesPerSec;
-		unsigned short nBlockAlign;
-		unsigned short wBitsPerSample;
-	} Format;
-	
-	struct WaveDataType
-	{
-		char ID[4];
-		unsigned int Length;
-	} Data;
-};
-
-#pragma pack( pop, NO_STRUCT_PADDING )
-#undef NO_STRUCT_PADDING
-
-class DirectSoundClass
+class SoundSystem
 {
 	private:
-	
-	LPDIRECTSOUND lpDirectSound;
-	DSCAPS Caps;
-	HRESULT hr;
-	HWND WindowHandle;
 
-	LPDIRECTSOUNDBUFFER lpPrimaryBuffer;
+	struct SoundBuffer
+	{
+		string Name;
+		SDL_AudioSpec Spec;
+		Uint8 *Data;
+		Uint32 Length;
+	};
 	
-	LPDIRECTSOUNDBUFFER *lpSoundBuffer;
-	string *SoundNames;
+	SDL_AudioDeviceID Device;
+
+	SoundBuffer *Buffers;
 	int MaxBuffers;
 	int NumBuffers;
 	
-	LPDIRECTSOUNDBUFFER *lpDupSoundBuffer;
-	int MaxDupBuffers;
-	int NumDupBuffers;
+	// streams bound to the device, which mixes everything they play
+	SDL_AudioStream **Voices;
+	int NumVoices;
 	
-	bool CheckForError( string ErrorMessage );
 	bool PlayBuffer( int index );
-	int LoadBuffer( char *FileName );
-	int LoadWaveFile( char *FileName );
+	int LoadBuffer( const char *FileName );
 
 	public:
 	
-	DirectSoundClass();
-	~DirectSoundClass();
+	SoundSystem();
+	~SoundSystem();
 	
-	bool Init( HWND theWindowHandle, int MaxSoundBuffers = 128 );
+	bool Init( int MaxSoundBuffers = 128, int MaxVoices = 32 );
+	void Destroy();
 
-	friend Sound;
+	friend class Sound;
 };
 
 class Sound
@@ -90,20 +57,20 @@ class Sound
 		BufferID = -1;
 	}
 
-	Sound( char *FileName )
+	Sound( const char *FileName )
 	{
-		BufferID = DSound.LoadBuffer( FileName );
+		BufferID = Audio.LoadBuffer( FileName );
 	}
 
-	bool Load( char *FileName )
+	bool Load( const char *FileName )
 	{
-		BufferID = DSound.LoadBuffer( FileName );
+		BufferID = Audio.LoadBuffer( FileName );
 		return ( BufferID >= 0 );
 	}
 
 	bool Play()
 	{
-		return DSound.PlayBuffer( BufferID );
+		return Audio.PlayBuffer( BufferID );
 	}
 
 	bool Valid()

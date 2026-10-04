@@ -59,8 +59,9 @@ int main( int argc, char *argv[] )
 	if ( ! gl.Init() )
 		return 1;
 
-	if ( ! DSound.Init() )
-		return 1;
+	// the game is still playable without sound
+	if ( ! Audio.Init() )
+		SDL_Log( "Sound is disabled" );
 
 	if ( ! Input.Init( Program.GetWindow() ) )
 		return 1;
@@ -111,6 +112,7 @@ int main( int argc, char *argv[] )
 		RenderFrame();
 	}
 
+	Audio.Destroy();
 	gl.Destroy();
 	Program.Destroy();
 

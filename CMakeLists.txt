@@ -18,8 +18,8 @@ set(SOURCES
     actionbase.h
     Input.cpp
     Input.h
-    DirectSound.cpp
-    DirectSound.h
+    Sound.cpp
+    Sound.h
     glstream.cpp
     glstream.h
     glstuff.cpp
