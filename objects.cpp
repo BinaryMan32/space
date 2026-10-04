@@ -460,8 +460,12 @@ void CameraLock::OnTick()
 	Sprite Source = ActionInterface.Source();
 	Sprite Target = ActionInterface.Target();
 
+	// turn the shortest way towards the target, angles wrap at +/- PI
+	float AngleDifference = Target->GetAngle() - Source->GetAngle();
+	NormalizeAngle( AngleDifference );
+
 	Source->Accelerate( 25.0f * ( Target->GetPosition() - Source->GetPosition() ),
-						75.0f * ( Target->GetAngle() - Source->GetAngle() ) );
+						75.0f * AngleDifference );
 }
 
 void FollowSprite::OnTick()
