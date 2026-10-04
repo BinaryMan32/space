@@ -41,7 +41,7 @@
 #ifndef GAMESTRING_H
 #define GAMESTRING_H
 
-#include <fstream.h>
+#include <iosfwd>
 #include "queue.h"
 
 class string
@@ -124,13 +124,13 @@ class string
 
 	// copy constructor
 	//	- copies a string
-	string( string &rhs );
+	string( const string &rhs );
 
 	// assigns an int to a string
 	string & operator = ( int theInteger );
 
 	// assigns a string to a string
-	string & operator = ( string &theString );
+	string & operator = ( const string &theString );
 
 	// assigns a character pointer to a string
 	string & operator = ( char *theData );
@@ -170,7 +170,7 @@ class string
 
 	// operator +
 	//    - appends <rhs> to end of string
-	string operator + ( string & rhs );
+	string operator + ( const string & rhs );
 	
 	// operator +=
 	//    - appends <c> to end of string
@@ -182,16 +182,16 @@ class string
 
 	// operator +=
 	//    - appends <rhs> to end of string
-	string & operator += ( string & rhs );
+	string & operator += ( const string & rhs );
 
 	// compare string to another string
 	
-	bool operator == ( string & rhs );
-	bool operator != ( string & rhs );
-	bool operator <= ( string & rhs );
-	bool operator >= ( string & rhs );
-	bool operator <  ( string & rhs );
-	bool operator >  ( string & rhs );
+	bool operator == ( const string & rhs );
+	bool operator != ( const string & rhs );
+	bool operator <= ( const string & rhs );
+	bool operator >= ( const string & rhs );
+	bool operator <  ( const string & rhs );
+	bool operator >  ( const string & rhs );
 
 	// compare string to a char *
 	
@@ -215,7 +215,7 @@ class string
 	// Find
 	//    - finds the first occurence of <theString>
 	//    - returns position if found, -1 if not in string
-	int Find( string & theString );
+	int Find( const string & theString );
 
 	// Find
 	//    - finds the first occurence of <c> after position <index>
@@ -230,7 +230,7 @@ class string
 	// Find
 	//    - finds the first occurence of <theString> after position <index>
 	//    - returns position if found, -1 if not in string
-	int Find( string & theString, int index );
+	int Find( const string & theString, int index );
 
 	// Remove
 	//    - removes the first occurence of <c>
@@ -246,7 +246,7 @@ class string
 	// Remove
 	//    - removes the first occurence of <rhs>
 	//    - returns position if removed, -1 if not in string
-	int Remove( string & rhs );
+	int Remove( const string & rhs );
 
 	// Remove
 	//    start - beginning position of string to remove
@@ -256,7 +256,7 @@ class string
 
 	// RemoveAll
 	//    - theString : string to remove
-	void RemoveAll( string & theString );
+	void RemoveAll( const string & theString );
 	
 	// Insert
 	//    index - position to insert at
@@ -271,7 +271,7 @@ class string
 	// Insert
 	//    index - position to insert at
 	//    rhs - string to insert
-	void Insert( int index, string & rhs );
+	void Insert( int index, const string & rhs );
 	
 	// Replace
 	//    - lhs : character to find
@@ -289,7 +289,7 @@ class string
 	//    - lhs : character to find
 	//    - rhs : string to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( char lhs, string & rhs );
+	int Replace( char lhs, const string & rhs );
 
 	// Replace
 	//    - lhs : character data to find
@@ -307,30 +307,30 @@ class string
 	//    - lhs : character data to find
 	//    - rhs : string to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( char *lhs, string & rhs );
+	int Replace( char *lhs, const string & rhs );
 
 	// Replace
 	//    - lhs : string to find
 	//    - rhs : character to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( string & lhs, char rhs );
+	int Replace( const string & lhs, char rhs );
 
 	// Replace
 	//    - lhs : string to find
 	//    - rhs : character data to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( string & lhs, char *rhs );
+	int Replace( const string & lhs, char *rhs );
 
 	// Replace
 	//    - lhs : string to find
 	//    - rhs : string to insert
 	//    - returns position if replaced, -1 if not
-	int Replace( string & lhs, string & rhs );
+	int Replace( const string & lhs, const string & rhs );
 	
 	// ReplaceAll
 	//    - lhs : string to find
 	//    - rhs : string to insert
-	void ReplaceAll( string & lhs, string & rhs );
+	void ReplaceAll( const string & lhs, const string & rhs );
 
 	// IncreaseSize
 	//    - theLength - number of spaces to append to end of string
@@ -359,14 +359,14 @@ class string
 	//    Loads a complete file from disk into the string
 	void LoadFile( char *FileName, int BufferLength, int MaxBuffers );
 
-	friend inline ostream & operator << ( ostream & stream, string & theString );
-	friend inline istream & operator >> ( istream & stream, string & theString );
+	friend std::ostream & operator << ( std::ostream & stream, const string & theString );
+	friend std::istream & operator >> ( std::istream & stream, string & theString );
 
 	static int BytesCopied;
 	static int BytesScanned;
 };
 
-inline ostream & operator << ( ostream & stream, string & theString );
-inline istream & operator >> ( istream & stream, string & theString );
+std::ostream & operator << ( std::ostream & stream, const string & theString );
+std::istream & operator >> ( std::istream & stream, string & theString );
 
 #endif

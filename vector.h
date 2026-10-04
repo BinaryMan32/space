@@ -1,7 +1,7 @@
 #ifndef VECTOR_H
 #define VECTOR_H
 
-#include <iostream.h>
+#include <iosfwd>
 
 #define PI 3.14159265358979f
 
@@ -71,6 +71,6 @@ extern vector2d Limit( const vector2d & theVector, float theMagnitude );
 extern vector2d Project( const vector2d & leftVector, const vector2d & rightVector );
 extern vector2d Perpendicular( const vector2d & theVector );
 
-extern ostream & operator << ( ostream & stream, const vector2d & theVector );
+extern std::ostream & operator << ( std::ostream & stream, const vector2d & theVector );
 
 #endif

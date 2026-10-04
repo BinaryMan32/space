@@ -1,7 +1,7 @@
 #include "queue.h"
 
 template <class DataType>
-queue<DataType>::queue<DataType>()
+queue<DataType>::queue()
 {
 	FrontElement = NULL;
 	BackElement = NULL;

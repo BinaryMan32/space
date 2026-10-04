@@ -98,13 +98,13 @@ List<DataType> & List<DataType>::operator = ( List<DataType> & rhs )
 }
 
 template <class DataType>
-List<DataType>::Iterator List<DataType>::Start()
+typename List<DataType>::Iterator List<DataType>::Start()
 {
 	return Iterator( head );
 }
 
 template <class DataType>
-List<DataType>::Iterator List<DataType>::End()
+typename List<DataType>::Iterator List<DataType>::End()
 {
 	return Iterator( tail );
 }
@@ -116,7 +116,7 @@ int List<DataType>::Length()
 }
 
 template <class DataType>
-void List<DataType>::Insert( DataType & theData )
+void List<DataType>::Insert( const DataType & theData )
 {
 	node *temp = new node( theData );
 	
@@ -130,7 +130,7 @@ void List<DataType>::Insert( DataType & theData )
 }		
 
 template <class DataType>
-void List<DataType>::Insert( Iterator & InsertIterator, DataType & theData )
+void List<DataType>::Insert( Iterator & InsertIterator, const DataType & theData )
 {
 	if ( InsertIterator.NodePtr == head ) return;
 

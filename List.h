@@ -20,7 +20,7 @@ class List
 			prev = next = NULL;
 		}
 	
-		node( DataType & theData ) 
+		node( const DataType & theData ) 
 		{
 			data = theData;
 			prev = next = NULL;
@@ -101,8 +101,8 @@ class List
 	Iterator End();
 	int Length();
 	
-	void Insert( DataType & theData );
-	void Insert( Iterator & InsertIterator, DataType & theData );
+	void Insert( const DataType & theData );
+	void Insert( Iterator & InsertIterator, const DataType & theData );
 	
 	void Remove( Iterator & RemoveIterator );
 	void Clear();

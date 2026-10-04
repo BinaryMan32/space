@@ -1,33 +1,33 @@
 #include "vector.h"
 
-#include <iostream.h>
+#include <iostream>
 #include <math.h>
 
 //	General Functions For Angles	///////////////////////////////////////////
 
-inline void NormalizeAngle( float & theAngle )
+void NormalizeAngle( float & theAngle )
 {
 //	while ( theAngle >= 2 * PI ) theAngle -= 2 * PI;
 //	while ( theAngle <  0      ) theAngle += 2 * PI;
 	theAngle = remainderf( theAngle, 2 * PI );
 }
 
-inline float arctan( float yval, float xval )
+float arctan( float yval, float xval )
 {
 	return atan2f( yval, xval );
 }
 
-inline float fsqrt( float num )
+float fsqrt( float num )
 {
 	return sqrtf( num );
 }
 
-inline float Degrees( float theAngle )
+float Degrees( float theAngle )
 {
 	return ( theAngle * 180 / PI );
 }
 
-inline float Radians( float theAngle )
+float Radians( float theAngle )
 {
 	return ( theAngle * PI / 180 );
 }
@@ -61,47 +61,47 @@ vector2d::vector2d( float X, float Y )
 
 //	Constant arithmetic  //////////////////////////////////////////////////////
 
-inline vector2d operator + ( const vector2d & theVector, float theConstant )
+vector2d operator + ( const vector2d & theVector, float theConstant )
 {
 	return vector2d( theVector.x + theConstant, theVector.y + theConstant );
 }
 
-inline vector2d operator - ( const vector2d & theVector, float theConstant )
+vector2d operator - ( const vector2d & theVector, float theConstant )
 {
 	return vector2d( theVector.x - theConstant, theVector.y - theConstant );
 }
 
-inline vector2d operator * ( const vector2d & theVector, float theConstant )
+vector2d operator * ( const vector2d & theVector, float theConstant )
 {
 	return vector2d( theVector.x * theConstant, theVector.y * theConstant );
 }
 
-inline vector2d operator / ( const vector2d & theVector, float theConstant )
+vector2d operator / ( const vector2d & theVector, float theConstant )
 {
 	return vector2d( theVector.x / theConstant, theVector.y / theConstant );
 }
 
-inline vector2d operator + ( float theConstant, const vector2d & theVector )
+vector2d operator + ( float theConstant, const vector2d & theVector )
 {
 	return vector2d( theConstant + theVector.x, theConstant + theVector.y );
 }
 
-inline vector2d operator - ( float theConstant, const vector2d & theVector )
+vector2d operator - ( float theConstant, const vector2d & theVector )
 {
 	return vector2d( theConstant - theVector.x, theConstant - theVector.y );
 }
 
-inline vector2d operator * ( float theConstant, const vector2d & theVector )
+vector2d operator * ( float theConstant, const vector2d & theVector )
 {
 	return vector2d( theConstant * theVector.x, theConstant * theVector.y );
 }
 
-inline vector2d operator / ( float theConstant, const vector2d & theVector )
+vector2d operator / ( float theConstant, const vector2d & theVector )
 {
 	return vector2d( theConstant / theVector.x, theConstant / theVector.y );
 }
 
-inline vector2d & operator += ( vector2d & theVector, float theConstant )
+vector2d & operator += ( vector2d & theVector, float theConstant )
 {
 	theVector.x += theConstant;
 	theVector.y += theConstant;
@@ -109,7 +109,7 @@ inline vector2d & operator += ( vector2d & theVector, float theConstant )
 	return theVector;
 }
 
-inline vector2d & operator -= ( vector2d & theVector, float theConstant )
+vector2d & operator -= ( vector2d & theVector, float theConstant )
 {
 	theVector.x -= theConstant;
 	theVector.y -= theConstant;
@@ -117,7 +117,7 @@ inline vector2d & operator -= ( vector2d & theVector, float theConstant )
 	return theVector;
 }
 
-inline vector2d & operator *= ( vector2d & theVector, float theConstant )
+vector2d & operator *= ( vector2d & theVector, float theConstant )
 {
 	theVector.x *= theConstant;
 	theVector.y *= theConstant;
@@ -125,7 +125,7 @@ inline vector2d & operator *= ( vector2d & theVector, float theConstant )
 	return theVector;
 }
 
-inline vector2d & operator /= ( vector2d & theVector, float theConstant )
+vector2d & operator /= ( vector2d & theVector, float theConstant )
 {
 	theVector.x /= theConstant;
 	theVector.y /= theConstant;
@@ -135,27 +135,27 @@ inline vector2d & operator /= ( vector2d & theVector, float theConstant )
 
 //	Vector arithmetic  ////////////////////////////////////////////////////////
 
-inline vector2d operator + ( const vector2d & leftVector, const vector2d & rightVector )
+vector2d operator + ( const vector2d & leftVector, const vector2d & rightVector )
 {
 	return vector2d( leftVector.x + rightVector.x, leftVector.y + rightVector.y );
 }
 
-inline vector2d operator - ( const vector2d & leftVector, const vector2d & rightVector )
+vector2d operator - ( const vector2d & leftVector, const vector2d & rightVector )
 {
 	return vector2d( leftVector.x - rightVector.x, leftVector.y - rightVector.y );
 }
 
-inline vector2d operator * ( const vector2d & leftVector, const vector2d & rightVector )
+vector2d operator * ( const vector2d & leftVector, const vector2d & rightVector )
 {
 	return vector2d( leftVector.x * rightVector.x, leftVector.y * rightVector.y );
 }
 
-inline vector2d operator / ( const vector2d & leftVector, const vector2d & rightVector )
+vector2d operator / ( const vector2d & leftVector, const vector2d & rightVector )
 {
 	return vector2d( leftVector.x / rightVector.x, leftVector.y / rightVector.y );
 }
 
-inline vector2d & operator += ( vector2d & leftVector, const vector2d & rightVector )
+vector2d & operator += ( vector2d & leftVector, const vector2d & rightVector )
 {
 	leftVector.x += rightVector.x;
 	leftVector.y += rightVector.y;
@@ -163,7 +163,7 @@ inline vector2d & operator += ( vector2d & leftVector, const vector2d & rightVec
 	return leftVector;
 }
 
-inline vector2d & operator -= ( vector2d & leftVector, const vector2d & rightVector )
+vector2d & operator -= ( vector2d & leftVector, const vector2d & rightVector )
 {
 	leftVector.x -= rightVector.x;
 	leftVector.y -= rightVector.y;
@@ -171,7 +171,7 @@ inline vector2d & operator -= ( vector2d & leftVector, const vector2d & rightVec
 	return leftVector;
 }
 
-inline vector2d & operator *= ( vector2d & leftVector, const vector2d & rightVector )
+vector2d & operator *= ( vector2d & leftVector, const vector2d & rightVector )
 {
 	leftVector.x *= rightVector.x;
 	leftVector.y *= rightVector.y;
@@ -179,7 +179,7 @@ inline vector2d & operator *= ( vector2d & leftVector, const vector2d & rightVec
 	return leftVector;
 }
 
-inline vector2d & operator /= ( vector2d & leftVector, const vector2d & rightVector )
+vector2d & operator /= ( vector2d & leftVector, const vector2d & rightVector )
 {
 	leftVector.x /= rightVector.x;
 	leftVector.y /= rightVector.y;
@@ -187,29 +187,29 @@ inline vector2d & operator /= ( vector2d & leftVector, const vector2d & rightVec
 	return leftVector;
 }
 
-inline vector2d operator + ( const vector2d & theVector )
+vector2d operator + ( const vector2d & theVector )
 {
 	return vector2d( theVector );
 }
 
-inline vector2d operator - ( const vector2d & theVector )
+vector2d operator - ( const vector2d & theVector )
 {
 	return vector2d( -theVector.x, -theVector.y );
 }
 
 //	Vector operations  ////////////////////////////////////////////////////////
 
-inline float CrossP( const vector2d & leftVector, const vector2d & rightVector )
+float CrossP( const vector2d & leftVector, const vector2d & rightVector )
 {
 	return ( leftVector.x * rightVector.y - leftVector.y * rightVector.x );
 }
 
-inline float DotP( const vector2d & leftVector, const vector2d & rightVector )
+float DotP( const vector2d & leftVector, const vector2d & rightVector )
 {
 	return ( leftVector.x * rightVector.x + leftVector.y * rightVector.y );
 }
 
-inline float Sin( const vector2d & leftVector, const vector2d & rightVector )
+float Sin( const vector2d & leftVector, const vector2d & rightVector )
 {
 	float leftMag = Mag( leftVector );
 	float rightMag = Mag( rightVector );
@@ -219,7 +219,7 @@ inline float Sin( const vector2d & leftVector, const vector2d & rightVector )
 	return ( CrossP( leftVector, rightVector ) / leftMag / rightMag );
 }
 
-inline float Cos( const vector2d & leftVector, const vector2d & rightVector )
+float Cos( const vector2d & leftVector, const vector2d & rightVector )
 {
 	float leftMag = Mag( leftVector );
 	float rightMag = Mag( rightVector );
@@ -229,19 +229,19 @@ inline float Cos( const vector2d & leftVector, const vector2d & rightVector )
 	return ( DotP( leftVector, rightVector ) / leftMag / rightMag );
 }
 
-inline float Angle( const vector2d & leftVector, const vector2d & rightVector )
+float Angle( const vector2d & leftVector, const vector2d & rightVector )
 {
 //	return float( atan2( CrossP( leftVector, rightVector ), DotP( leftVector, rightVector ) ) );
 	return arctan( CrossP( leftVector, rightVector ), DotP( leftVector, rightVector ) );
 }
 
-inline float Angle( const vector2d & theVector )
+float Angle( const vector2d & theVector )
 {
 //	return float( atan2( theVector.y, theVector.x ) );
 	return arctan( theVector.y, theVector.x );
 }
 
-inline vector2d Rotate( const vector2d & theVector, float theAngle )
+vector2d Rotate( const vector2d & theVector, float theAngle )
 {
 	vector2d BasisX( theAngle );
 	vector2d BasisY( -BasisX.y, BasisX.x );
@@ -249,31 +249,31 @@ inline vector2d Rotate( const vector2d & theVector, float theAngle )
 	return ( theVector.x * BasisX + theVector.y * BasisY );
 }
 
-inline float Mag( const vector2d & theVector )
+float Mag( const vector2d & theVector )
 {
 	return fsqrt( DotP( theVector, theVector ) );
 }
 
-inline float MagSquared( const vector2d & theVector )
+float MagSquared( const vector2d & theVector )
 {
 	return DotP( theVector, theVector );
 }
 
-inline vector2d Normalize( const vector2d & theVector )
+vector2d Normalize( const vector2d & theVector )
 {
 	if ( theVector.x == 0 && theVector.y == 0 ) return theVector;
 		
 	return ( theVector * ( 1 / Mag( theVector ) ) );
 }
 
-inline vector2d Scale( const vector2d & theVector, float theMagnitude )
+vector2d Scale( const vector2d & theVector, float theMagnitude )
 {
 	if ( theVector.x == 0 && theVector.y == 0 ) return theVector;
 
 	return ( theVector * ( theMagnitude / Mag( theVector ) ) );
 }
 
-inline vector2d Limit( const vector2d & theVector, float theMagnitude )
+vector2d Limit( const vector2d & theVector, float theMagnitude )
 {
 	if ( theVector.x == 0 && theVector.y == 0 ) return theVector;
 
@@ -284,21 +284,21 @@ inline vector2d Limit( const vector2d & theVector, float theMagnitude )
 	return ( theVector * ( theMagnitude / curMagnitude ) );
 }
 
-inline vector2d Project( const vector2d & leftVector, const vector2d & rightVector )
+vector2d Project( const vector2d & leftVector, const vector2d & rightVector )
 {
 	if ( rightVector.x == 0 && rightVector.y == 0 ) return rightVector;
 
 	return ( DotP( leftVector, rightVector ) / DotP( rightVector, rightVector ) * rightVector );
 }
 
-inline vector2d Perpendicular( const vector2d & theVector )
+vector2d Perpendicular( const vector2d & theVector )
 {
 	return vector2d( -theVector.y, theVector.x );
 }
 
 //	Output	///////////////////////////////////////////////////////////////////
 
-inline ostream & operator << ( ostream & stream, const vector2d & theVector )
+std::ostream & operator << ( std::ostream & stream, const vector2d & theVector )
 {
 	stream << "[ " << theVector.x << ' ' << theVector.y << " ]";
 	return stream;

@@ -1,6 +1,7 @@
-#include <iostream.h>
 #include <algorithm>
 #include <cstring>
+#include <fstream>
+#include <iostream>
 
 #include "gamestring.h"
 	
@@ -196,7 +197,7 @@ string::string( int theLength, char theValue )
 
 // copy constructor
 //	- copies a string
-string::string( string &rhs )
+string::string( const string &rhs )
 {
 	length = rhs.length;
 
@@ -259,7 +260,7 @@ string & string::operator = ( int theInteger )
 }
 
 // assigns a string to a string
-string & string::operator = ( string &theString )
+string & string::operator = ( const string &theString )
 {
 	if ( this != &theString )
 	{
@@ -386,7 +387,7 @@ string string::operator + ( char *rhs )
 
 // operator +
 //    - appends <rhs> to end of string
-string string::operator + ( string & rhs )
+string string::operator + ( const string & rhs )
 {
 	string temp;
 
@@ -439,7 +440,7 @@ string & string::operator += ( char *rhs )
 
 // operator +=
 //    - appends <rhs> to end of string
-string & string::operator += ( string & rhs )
+string & string::operator += ( const string & rhs )
 {
 	char *OldData = data;
 	int OldLength = length;	
@@ -463,22 +464,22 @@ string & string::operator += ( string & rhs )
 
 // compare string to another string
 	
-bool string::operator == ( string & rhs )
+bool string::operator == ( const string & rhs )
 	{ return ( StringCompare( data, length, rhs.data, rhs.length ) == 0 ); }
 
-bool string::operator != ( string & rhs )
+bool string::operator != ( const string & rhs )
 	{ return ( StringCompare( data, length, rhs.data, rhs.length ) != 0 ); }
 
-bool string::operator <= ( string & rhs )
+bool string::operator <= ( const string & rhs )
 	{ return ( StringCompare( data, length, rhs.data, rhs.length ) <= 0 ); }
 
-bool string::operator >= ( string & rhs )
+bool string::operator >= ( const string & rhs )
 	{ return ( StringCompare( data, length, rhs.data, rhs.length ) >= 0 ); }
 
-bool string::operator <  ( string & rhs )
+bool string::operator <  ( const string & rhs )
 	{ return ( StringCompare( data, length, rhs.data, rhs.length ) < 0 ); }
 
-bool string::operator >  ( string & rhs )
+bool string::operator >  ( const string & rhs )
 	{ return ( StringCompare( data, length, rhs.data, rhs.length ) > 0 ); }
 
 // compare string to a char *
@@ -520,7 +521,7 @@ int string::Find( char *theString )
 // Find
 //    - finds the first occurence of <theString>
 //    - returns position if found, -1 if not in string
-int string::Find( string & theString )
+int string::Find( const string & theString )
 {
 	return FindString( data, length, theString.data, theString.length );
 }
@@ -548,7 +549,7 @@ int string::Find( char *theString, int index )
 // Find
 //    - finds the first occurence of <theString> after position <index>
 //    - returns position if found, -1 if not in string
-int string::Find( string & theString, int index )
+int string::Find( const string & theString, int index )
 {
 	int delta = FindString( data + index, length - index, theString.data, theString.length );
 	if ( delta < 0 ) return -1;
@@ -602,7 +603,7 @@ int string::Remove( char *rhs )
 // Remove
 //    - removes the first occurence of <rhs>
 //    - returns position if removed, -1 if not in string
-int string::Remove( string & rhs )
+int string::Remove( const string & rhs )
 {
 	int index = Find( rhs );
 	if ( index < 0 ) return -1;
@@ -660,7 +661,7 @@ string string::Remove( int start, int theLength )
 
 // RemoveAll
 //    - theString : string to remove
-void string::RemoveAll( string & theString )
+void string::RemoveAll( const string & theString )
 {
 	char *TempData = data;
 	int TempLength = length;
@@ -745,7 +746,7 @@ void string::Insert( int index, char *rhs )
 // Insert
 //    index - position to insert at
 //    rhs - string to insert
-void string::Insert( int index, string & rhs )
+void string::Insert( int index, const string & rhs )
 {
 	if ( index < 0 || index >= length ) return;
 
@@ -755,7 +756,7 @@ void string::Insert( int index, string & rhs )
 	data = new char [ length + 1 ];
 
 	MemCopy( OldData, data, index );
-	MemCopy( rhs, data+index, rhs.length );
+	MemCopy( rhs.data, data+index, rhs.length );
 	MemCopy( OldData+index, data+index+rhs.length, length-index-rhs.length+1 );
 
 	delete [] OldData;
@@ -805,7 +806,7 @@ int string::Replace( char lhs, char *rhs )
 //    - lhs : character to find
 //    - rhs : string to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( char lhs, string & rhs )
+int string::Replace( char lhs, const string & rhs )
 {
 	int index = Find( lhs );
 
@@ -817,7 +818,7 @@ int string::Replace( char lhs, string & rhs )
 		data = new char [ length + 1 ];
 			
 		MemCopy( old.data, data, index );
-		MemCopy( rhs, data+index, rhs.length );
+		MemCopy( rhs.data, data+index, rhs.length );
 		MemCopy( old.data+index+1, data+index+rhs.length, old.length-index );
 	}
 
@@ -877,7 +878,7 @@ int string::Replace( char *lhs, char *rhs )
 //    - lhs : character data to find
 //    - rhs : string to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( char *lhs, string & rhs )
+int string::Replace( char *lhs, const string & rhs )
 {
 	int LhsLength = GetLength( lhs );
 	int index = FindString( data, length, lhs, LhsLength );
@@ -901,7 +902,7 @@ int string::Replace( char *lhs, string & rhs )
 //    - lhs : string to find
 //    - rhs : character to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( string & lhs, char rhs )
+int string::Replace( const string & lhs, char rhs )
 {
 	int index = Find( lhs );
 
@@ -924,7 +925,7 @@ int string::Replace( string & lhs, char rhs )
 //    - lhs : string to find
 //    - rhs : character data to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( string & lhs, char *rhs )
+int string::Replace( const string & lhs, char *rhs )
 {
 	int index = Find( lhs );
 
@@ -948,7 +949,7 @@ int string::Replace( string & lhs, char *rhs )
 //    - lhs : string to find
 //    - rhs : string to insert
 //    - returns position if replaced, -1 if not
-int string::Replace( string & lhs, string & rhs )
+int string::Replace( const string & lhs, const string & rhs )
 {
 	int index = Find( lhs );
 
@@ -970,7 +971,7 @@ int string::Replace( string & lhs, string & rhs )
 // ReplaceAll
 //    - lhs : string to find
 //    - rhs : string to insert
-void string::ReplaceAll( string & lhs, string & rhs )
+void string::ReplaceAll( const string & lhs, const string & rhs )
 {
 	char *TempData = data;
 	int TempLength = length;
@@ -1115,8 +1116,8 @@ void string::LoadFile( char *FileName, int BufferLength, int MaxBuffers )
 	char **Buffers;
 	Buffers = new char * [ MaxBuffers ];
 	
-	ifstream infile( FileName );
-	infile.unsetf( ios::skipws );
+	std::ifstream infile( FileName );
+	infile.unsetf( std::ios::skipws );
 
 	length = 0;
 
@@ -1166,14 +1167,14 @@ void string::LoadFile( char *FileName, int BufferLength, int MaxBuffers )
 	infile.close();
 }
 
-inline ostream & operator << ( ostream & stream, string & theString )
+std::ostream & operator << ( std::ostream & stream, const string & theString )
 {
 	stream << theString.data;
 	
 	return stream;
 }
 
-inline istream & operator >> ( istream & stream, string & theString )
+std::istream & operator >> ( std::istream & stream, string & theString )
 {
 	char *temp;
 	temp = new char [ 2048 ];
